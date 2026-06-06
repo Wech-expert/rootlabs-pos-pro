@@ -1,0 +1,35 @@
+.mx-ui-money {
+  font-family: var(--mx-font-family);
+  color: var(--mx-text-primary);
+  white-space: nowrap;
+}
+
+.mx-ui-money--sm {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+.mx-ui-money--md {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+}
+
+.mx-ui-money--lg {
+  font-size: 48px;
+  line-height: 56px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.mx-ui-money--xl {
+  font-size: 56px;
+  line-height: 64px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.mx-ui-money--emphasized {
+  color: var(--mx-action-primary);
+}

@@ -1,0 +1,48 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Build output
+assets/dist/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Logs
+*.log
+
+# Composer (if used in future)
+vendor/
+
+# WordPress
+wp-config-local.php
+
+# Docker
+docker/
+
+# Build output
+build/
+
+# OpenCode
+# Temp
+*.tmp
+*.swp
+*.bak
+
+# Vite HTML entry is not used by the WordPress plugin runtime
+assets/dist/index.html

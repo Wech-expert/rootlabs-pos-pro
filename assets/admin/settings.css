@@ -1,0 +1,61 @@
+.mx-pos-settings-wrap {
+    max-width: 800px;
+}
+
+.mx-pos-section {
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+}
+
+.mx-pos-section h2 {
+    margin-top: 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #dcdcde;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.mx-pos-section h3 {
+    margin-top: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.mx-pos-logo-preview {
+    min-height: 40px;
+    padding: 12px;
+    background: #f9f9f9;
+    border: 1px dashed #c3c4c7;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.mx-pos-logo-preview img {
+    margin: 0 auto;
+}
+
+.mx-pos-privacy-note {
+    margin-top: 12px !important;
+    font-style: italic;
+    color: #646970;
+}
+
+.mx-pos-settings-form .form-table {
+    margin-top: 8px;
+}
+
+.mx-pos-settings-form .form-table th {
+    width: 160px;
+    padding: 12px 10px 12px 0;
+}
+
+.mx-pos-settings-form .form-table td {
+    padding: 8px 10px;
+}
+
+.mx-pos-settings-form .form-table fieldset label {
+    font-weight: normal;
+}

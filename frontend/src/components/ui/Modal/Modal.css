@@ -1,0 +1,103 @@
+/* Overlay is portaled into .mx-pos-shell so scoped POS styles keep applying. */
+.mx-ui-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--mx-space-lg);
+}
+
+.mx-ui-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.mx-ui-modal-panel {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--mx-radius-lg);
+  box-shadow: var(--mx-shadow-md);
+  width: 100%;
+  max-width: 480px;
+  max-height: calc(100vh - var(--mx-space-xl) * 2);
+  max-height: calc(100dvh - var(--mx-space-xl) * 2);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.mx-ui-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: var(--mx-space-lg) var(--mx-space-lg) 0;
+  gap: var(--mx-space-md);
+}
+
+.mx-ui-modal__title {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+  color: var(--mx-text-primary);
+  margin: 0;
+}
+
+.mx-ui-modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--mx-radius-sm);
+  color: var(--mx-text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.mx-ui-modal__close:hover {
+  background: var(--mx-bg-hover);
+  color: var(--mx-text-primary);
+}
+
+.mx-ui-modal__description {
+  padding: var(--mx-space-sm) var(--mx-space-lg) 0;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--mx-text-muted);
+  margin: 0;
+}
+
+.mx-ui-modal__body {
+  padding: var(--mx-space-lg);
+}
+
+@media (max-height: 800px) {
+  .mx-ui-modal-overlay {
+    padding: var(--mx-space-md);
+  }
+
+  .mx-ui-modal__header {
+    padding: var(--mx-space-md) var(--mx-space-md) 0;
+  }
+
+  .mx-ui-modal__title {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .mx-ui-modal__body {
+    padding: var(--mx-space-md);
+  }
+}

@@ -1,0 +1,76 @@
+@import './tokens.css';
+
+#mx-pos-pro-root,
+#mx-pos-pro-root *,
+#mx-pos-pro-root *::before,
+#mx-pos-pro-root *::after {
+  box-sizing: border-box;
+}
+
+#mx-pos-pro-root {
+  width: 100%;
+  font-family: var(--mx-font-family);
+  color: var(--mx-text-primary);
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#mx-pos-pro-root h1,
+#mx-pos-pro-root h2,
+#mx-pos-pro-root h3,
+#mx-pos-pro-root h4,
+#mx-pos-pro-root h5,
+#mx-pos-pro-root h6,
+#mx-pos-pro-root p {
+  margin: 0;
+}
+
+#mx-pos-pro-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+#mx-pos-pro-root button:not(.mx-ui-button) {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+#mx-pos-pro-root ul,
+#mx-pos-pro-root ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#mx-pos-pro-root input {
+  font-family: inherit;
+}
+
+#mx-pos-pro-root ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+#mx-pos-pro-root ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#mx-pos-pro-root ::-webkit-scrollbar-thumb {
+  background: var(--mx-border-medium);
+  border-radius: var(--mx-radius-full);
+}
+
+#mx-pos-pro-root ::-webkit-scrollbar-thumb:hover {
+  background: var(--mx-border-dark);
+}
+
+#mx-pos-pro-root :focus-visible {
+  outline: 2px solid var(--mx-action-primary);
+  outline-offset: 2px;
+}

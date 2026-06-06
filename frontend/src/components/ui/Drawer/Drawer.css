@@ -1,0 +1,56 @@
+.mx-ui-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
+}
+
+.mx-ui-drawer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: 901;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--mx-shadow-md);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.mx-ui-drawer--left {
+  left: 0;
+}
+
+.mx-ui-drawer--right {
+  right: 0;
+}
+
+.mx-ui-drawer__close {
+  position: absolute;
+  top: var(--mx-space-md);
+  right: var(--mx-space-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--mx-radius-sm);
+  color: var(--mx-text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+  z-index: 1;
+}
+
+.mx-ui-drawer__close:hover {
+  background: var(--mx-bg-hover);
+  color: var(--mx-text-primary);
+}
+
+.mx-ui-drawer__content {
+  padding: var(--mx-space-xl);
+  flex: 1;
+}

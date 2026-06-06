@@ -1,0 +1,106 @@
+.mx-ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--mx-space-sm);
+  font-family: var(--mx-font-family);
+  font-weight: 600;
+  border-radius: var(--mx-radius-md);
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, opacity 150ms ease;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  position: relative;
+}
+
+.mx-ui-button--sm {
+  padding: 6px 12px;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.mx-ui-button--md {
+  padding: 10px 20px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.mx-ui-button--lg {
+  padding: 14px 28px;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.mx-ui-button--primary {
+  background: var(--mx-action-primary);
+  color: var(--mx-text-inverse);
+  border-color: var(--mx-action-primary);
+}
+
+.mx-ui-button--primary:hover:not(:disabled) {
+  background: var(--mx-action-primary-hover);
+  border-color: var(--mx-action-primary-hover);
+}
+
+.mx-ui-button--secondary {
+  background: var(--mx-action-secondary);
+  color: var(--mx-text-primary);
+  border-color: var(--mx-border-medium);
+}
+
+.mx-ui-button--secondary:hover:not(:disabled) {
+  background: var(--mx-bg-hover);
+  border-color: var(--mx-border-dark);
+}
+
+.mx-ui-button--ghost {
+  background: transparent;
+  color: var(--mx-text-primary);
+  border-color: transparent;
+}
+
+.mx-ui-button--ghost:hover:not(:disabled) {
+  background: var(--mx-bg-hover);
+}
+
+.mx-ui-button--danger {
+  background: transparent;
+  color: var(--mx-error);
+  border-color: var(--mx-error);
+}
+
+.mx-ui-button--danger:hover:not(:disabled) {
+  background: var(--mx-error);
+  color: var(--mx-text-inverse);
+}
+
+.mx-ui-button--disabled,
+.mx-ui-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.mx-ui-button--loading {
+  cursor: wait;
+}
+
+.mx-ui-button__spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: var(--mx-radius-full);
+  animation: mx-ui-spin 600ms linear infinite;
+}
+
+@keyframes mx-ui-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.mx-ui-button__label--hidden {
+  opacity: 0.4;
+}

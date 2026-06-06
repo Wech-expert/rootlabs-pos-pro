@@ -1,0 +1,51 @@
+.mx-ui-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.mx-ui-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.mx-ui-table__header {
+  padding: var(--mx-space-sm) var(--mx-space-md);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--mx-text-muted);
+  text-align: left;
+  border-bottom: 1px solid var(--mx-border-light);
+  white-space: nowrap;
+}
+
+.mx-ui-table__cell {
+  padding: var(--mx-space-sm) var(--mx-space-md);
+  color: var(--mx-text-primary);
+  border-bottom: 1px solid var(--mx-border-light);
+}
+
+.mx-ui-table__row:hover {
+  background: var(--mx-bg-hover);
+}
+
+.mx-ui-table-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--mx-space-xl);
+  min-height: 120px;
+  border: 1px solid var(--mx-border-light);
+  border-radius: var(--mx-radius-md);
+}
+
+.mx-ui-table-empty__text {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--mx-text-muted);
+  margin: 0;
+}

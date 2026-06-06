@@ -1,0 +1,58 @@
+/* RootLabs POS design tokens */
+
+#mx-pos-pro-root {
+  --mx-color-white: #FFFFFF;
+  --mx-color-black: #000000;
+
+  --mx-bg-primary: #F9F9F9;
+  --mx-bg-secondary: #EEEEEE;
+  --mx-bg-tertiary: #E2E2E2;
+  --mx-bg-surface: #FFFFFF;
+  --mx-bg-hover: #F3F3F3;
+
+  --mx-border-light: #E2E2E2;
+  --mx-border-medium: #CFCFCF;
+  --mx-border-dark: #7E7E7E;
+
+  --mx-text-primary: #1B1B1B;
+  --mx-text-secondary: #4C4C4C;
+  --mx-text-muted: #7E7E7E;
+  --mx-text-inverse: #FFFFFF;
+
+  --mx-action-primary: #000000;
+  --mx-action-primary-hover: #1B1B1B;
+  --mx-action-secondary: #FFFFFF;
+
+  --mx-success: #1B1B1B;
+  --mx-error: #93000A;
+  --mx-warning: #7E7E7E;
+
+  --mx-space-xs: 4px;
+  --mx-space-sm: 8px;
+  --mx-space-md: 16px;
+  --mx-space-lg: 24px;
+  --mx-space-xl: 48px;
+  --mx-space-2xl: 64px;
+
+  --mx-radius-sm: 4px;
+  --mx-radius-md: 8px;
+  --mx-radius-lg: 12px;
+  --mx-radius-full: 9999px;
+
+  --mx-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --mx-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+
+  --mx-sidebar-width: 256px;
+  --mx-topbar-height: 64px;
+
+  --mx-compact-card-padding: 12px;
+  --mx-compact-thumbnail-size: 72px;
+  --mx-compact-keypad-height: 52px;
+  --mx-compact-method-height: 56px;
+  --mx-compact-quick-amount-height: 46px;
+  --mx-compact-gap: 8px;
+  --mx-compact-panel-padding: 12px;
+  --mx-compact-action-height: 50px;
+
+  --mx-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}

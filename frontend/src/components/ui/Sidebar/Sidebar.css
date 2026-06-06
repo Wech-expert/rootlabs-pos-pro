@@ -1,0 +1,10 @@
+.mx-ui-sidebar {
+  display: flex;
+  flex-direction: column;
+  background: var(--mx-bg-surface);
+  border-right: 1px solid var(--mx-border-light);
+  padding: var(--mx-space-lg);
+  gap: var(--mx-space-xl);
+  overflow-y: auto;
+  flex-shrink: 0;
+}

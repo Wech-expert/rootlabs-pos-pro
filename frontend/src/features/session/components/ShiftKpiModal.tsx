@@ -1,0 +1,209 @@
+import { useEffect, useState, useCallback } from 'react';
+import { Modal, MoneyDisplay, Button } from '../../../components/ui';
+import { generateCutX } from '../../cash-cuts/services/cashCutApi';
+import { fetchSalesHistory } from '../../sales-history/services/saleHistoryApi';
+import { fetchTicket, fetchGiftTicket } from '../../sales/services/ticketApi';
+import { writeTicketAndPrint } from '../../sales/utils/printTicket';
+import CutSummaryView from '../../cash-cuts/components/CutSummaryView';
+import type { CutXResponse } from '../../cash-cuts/types';
+import type { SaleHistoryItem } from '../../sales-history/types';
+
+interface ShiftKpiModalProps {
+  open: boolean;
+  sessionId: number;
+  onClose: () => void;
+}
+
+function ShiftKpiModal({ open, sessionId, onClose }: ShiftKpiModalProps) {
+  const [cutData, setCutData] = useState<CutXResponse | null>(null);
+  const [sales, setSales] = useState<SaleHistoryItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [printing, setPrinting] = useState<{ saleId: number; type: 'ticket' | 'gift' } | null>(null);
+  const [printError, setPrintError] = useState<string | null>(null);
+
+  const loadData = useCallback(async () => {
+    if (!sessionId) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const [cutResult, salesResult] = await Promise.all([
+        generateCutX(sessionId),
+        fetchSalesHistory(
+          {
+            date_from: '',
+            date_to: '',
+            status: '',
+            cashier_id: null,
+            search: '',
+            sessionId: sessionId,
+          },
+          1,
+          100
+        ),
+      ]);
+      setCutData(cutResult);
+      setSales(salesResult.items);
+      setPrintError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error cargando datos del turno');
+    } finally {
+      setLoading(false);
+    }
+  }, [sessionId]);
+
+  useEffect(() => {
+    if (open) {
+      void loadData();
+    } else {
+      setCutData(null);
+      setSales([]);
+      setPrintError(null);
+      setPrinting(null);
+    }
+  }, [open, loadData]);
+
+  const doPrint = useCallback(async (saleId: number, useGift: boolean) => {
+    const type = useGift ? 'gift' : 'ticket';
+    const win = window.open('', '_blank', 'width=420,height=760');
+
+    if (!win) {
+      setPrintError('No se pudo abrir la ventana de impresión. Permite ventanas emergentes para este sitio.');
+      return;
+    }
+
+    setPrinting({ saleId, type });
+    setPrintError(null);
+
+    try {
+      const html = useGift
+        ? await fetchGiftTicket(saleId)
+        : await fetchTicket(saleId);
+      writeTicketAndPrint(win, html);
+    } catch (err) {
+      setPrintError(err instanceof Error ? err.message : 'No se pudo generar el ticket');
+      win.close();
+    } finally {
+      setPrinting(null);
+    }
+  }, []);
+
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Ventas del Turno"
+      panelClassName="mx-cut-modal-panel mx-cut-x-modal-panel"
+    >
+      <div className="mx-cut-modal">
+        {loading && (
+          <div className="mx-cut-modal__loading">
+            <p>Calculando estadísticas...</p>
+          </div>
+        )}
+
+        {error && !loading && (
+          <div className="mx-cut-modal__error" role="alert">
+            <p>{error}</p>
+            <Button variant="secondary" size="sm" onClick={loadData}>
+              Reintentar
+            </Button>
+          </div>
+        )}
+
+        {!loading && !error && cutData && (
+          <>
+            <div className="mx-cut-x-modal__columns">
+              <CutSummaryView summary={cutData.cut} />
+
+              <div className="mx-cut-x-modal__counter" style={{ display: 'flex', flexDirection: 'column' }}>
+                <div className="mx-cut-x-modal__counter-header">
+                  <h3 className="mx-cut-x-modal__counter-title">Listado de Ventas ({sales.length})</h3>
+                  <p className="mx-cut-x-modal__counter-hint">
+                    Últimas ventas procesadas en el turno actual.
+                  </p>
+                </div>
+
+                <div className="mx-kpi-table-container">
+                  <table className="mx-kpi-table">
+                    <thead>
+                      <tr>
+                        <th># Orden</th>
+                        <th>Fecha</th>
+                        <th>Método</th>
+                        <th>Ticket</th>
+                        <th>Ticket regalo</th>
+                        <th style={{ textAlign: 'right' }}>Neto</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sales.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="mx-kpi-table-empty">
+                            No hay ventas en este turno
+                          </td>
+                        </tr>
+                      ) : (
+                        sales.map((sale) => (
+                          <tr key={sale.id}>
+                            <td>#{sale.wc_order_id}</td>
+                            <td>
+                              {new Date(sale.created_at).toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </td>
+                            <td>{sale.payment_method_label || sale.payment_method || '-'}</td>
+                            <td className="mx-kpi-table__action">
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                onClick={() => doPrint(sale.id, false)}
+                                loading={printing?.saleId === sale.id && printing.type === 'ticket'}
+                                disabled={printing !== null}
+                              >
+                                Ticket
+                              </Button>
+                            </td>
+                            <td className="mx-kpi-table__action">
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                onClick={() => doPrint(sale.id, true)}
+                                loading={printing?.saleId === sale.id && printing.type === 'gift'}
+                                disabled={printing !== null}
+                              >
+                                Regalo
+                              </Button>
+                            </td>
+                            <td style={{ textAlign: 'right' }}>
+                              <MoneyDisplay amount={parseFloat(sale.net_total)} />
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {printError && (
+                  <p className="mx-kpi-table-print-error" role="alert">
+                    {printError}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="mx-cut-modal__actions">
+              <Button variant="primary" size="md" onClick={onClose}>
+                Cerrar
+              </Button>
+            </div>
+          </>
+        )}
+      </div>
+    </Modal>
+  );
+}
+
+export default ShiftKpiModal;
