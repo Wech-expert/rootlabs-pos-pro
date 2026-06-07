@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/mralonsocorona/mralonsocorona/main/rootlabs-pos-banner.png" alt="RootLabs POS for WooCommerce" width="100%"/>
-
 # RootLabs POS for WooCommerce
 
 **A self-hosted, open source point-of-sale system built on top of WooCommerce.**
