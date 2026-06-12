@@ -1,5 +1,5 @@
 === RootLabs POS for WooCommerce ===
-Contributors: rootlabs
+Contributors: blacknovamx
 Tags: woocommerce, pos, point of sale, retail, cash register
 Requires at least: 6.0
 Tested up to: 7.0
@@ -48,6 +48,10 @@ No. The uninstall routine is intentionally non-destructive to prevent accidental
 3. Admin settings.
 
 == Changelog ==
+
+= 0.1.1 =
+* Public release package for WordPress.org submission.
+* Includes POS interface, cash sessions, payment methods, refunds, parked carts, customer lookup, product search, audit logs, and WooCommerce order integration.
 
 = 0.1.0 =
 * Initial public open source release.
