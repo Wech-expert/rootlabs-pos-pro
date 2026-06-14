@@ -1,20 +1,5 @@
 <?php
 
-
-/**
- * RootLabs POS uses custom operational tables for POS data.
- * These database calls are intentional and isolated in repository/service layers.
- *
- * rootlabs-pos-pro-w2a-db-intentional
- *
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
- * phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
- * phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
- * phpcs:disable WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
- * phpcs:disable PluginCheck.Security.DirectDB.UnescapedDBParameter
- */
-
 namespace MXPOSPro\Cash;
 
 defined('ABSPATH') || exit;
@@ -43,7 +28,6 @@ class CashSessionRepository
             return null;
         }
 
-        // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- Joined table identifiers are internal plugin tables built from $wpdb->prefix; values are prepared in the nested call.
         $row = $wpdb->get_row(
             $wpdb->prepare(
                 "SELECT * FROM {$this->table}
@@ -185,7 +169,6 @@ class CashSessionRepository
             return null;
         }
 
-        // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- Joined table identifiers are internal plugin tables built from $wpdb->prefix; values are prepared in the nested call.
         $row = $wpdb->get_row(
             $wpdb->prepare(
                 "SELECT * FROM {$this->table} WHERE id = %d LIMIT 1",
@@ -209,7 +192,6 @@ class CashSessionRepository
         $branches_table  = $wpdb->prefix . 'mx_pos_branches';
         $employees_table = $wpdb->prefix . 'mx_pos_employees';
 
-        // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- Joined table identifiers are internal plugin tables built from $wpdb->prefix; values are prepared in the nested call.
         $row = $wpdb->get_row(
             $wpdb->prepare(
                 "SELECT s.*, r.name AS register_name, b.name AS branch_name, e.display_name AS employee_name
@@ -235,7 +217,6 @@ class CashSessionRepository
             return null;
         }
 
-        // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- Joined table identifiers are internal plugin tables built from $wpdb->prefix; values are prepared in the nested call.
         $row = $wpdb->get_row(
             $wpdb->prepare(
                 "SELECT * FROM {$this->table}
@@ -259,7 +240,6 @@ class CashSessionRepository
 
         $today = current_time('Y-m-d');
 
-        // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- Joined table identifiers are internal plugin tables built from $wpdb->prefix; values are prepared in the nested call.
         $row = $wpdb->get_row(
             $wpdb->prepare(
                 "SELECT id, status, opened_at, closed_at,

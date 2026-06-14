@@ -1,20 +1,5 @@
 <?php
 
-
-/**
- * RootLabs POS uses custom operational tables for POS data.
- * These database calls are intentional and isolated in repository/service layers.
- *
- * rootlabs-pos-pro-w2a-db-intentional
- *
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
- * phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
- * phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
- * phpcs:disable WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
- * phpcs:disable PluginCheck.Security.DirectDB.UnescapedDBParameter
- */
-
 namespace MXPOSPro\Sales;
 
 defined('ABSPATH') || exit;
@@ -67,6 +52,12 @@ class SaleRepository
                 }
             }
 
+            error_log(
+                sprintf(
+                    '[MX POS Pro] Failed to insert sale record: %s',
+                    $wpdb->last_error !== '' ? $wpdb->last_error : 'unknown database error'
+                )
+            );
 
             return new WP_Error(
                 'mx_pos_sale_insert_failed',
@@ -119,6 +110,12 @@ class SaleRepository
         $missing = array_values(array_diff($requiredColumns, is_array($columns) ? $columns : []));
 
         if (count($missing) > 0) {
+            error_log(
+                sprintf(
+                    '[MX POS Pro] POS sales table schema incomplete. Missing columns: %s',
+                    implode(', ', $missing)
+                )
+            );
 
             return new WP_Error(
                 'mx_pos_sales_schema_incomplete',

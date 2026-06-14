@@ -1,0 +1,309 @@
+@page {
+  size: 80mm auto;
+  margin: 3mm;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: #fff;
+  color: #000;
+}
+
+body {
+  width: 74mm;
+  margin: 0 auto;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body[data-ticket-width="58mm"] {
+  width: 54mm;
+  font-size: 12px;
+}
+
+.store {
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.2;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}
+
+body[data-ticket-width="58mm"] .store {
+  font-size: 14px;
+}
+
+.store-address {
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.3;
+  margin-bottom: 5px;
+}
+
+body[data-ticket-width="58mm"] .store-address {
+  font-size: 10px;
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.logo img {
+  max-width: 42mm;
+  max-height: 22mm;
+  width: auto;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+body[data-ticket-width="58mm"] .logo img {
+  max-width: 34mm;
+}
+
+.meta {
+  margin: 7px 0;
+  font-size: 12px;
+}
+
+body[data-ticket-width="58mm"] .meta {
+  font-size: 11px;
+}
+
+.meta span {
+  display: block;
+  margin-bottom: 1px;
+}
+
+.sep {
+  border: none;
+  border-top: 1px dashed #000;
+  margin: 7px 0;
+  height: 0;
+}
+
+.items {
+  width: 100%;
+}
+
+.items-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-bottom: 1px solid #000;
+  padding-bottom: 3px;
+  margin-bottom: 4px;
+}
+
+body[data-ticket-width="58mm"] .items-title {
+  font-size: 10px;
+}
+
+.item {
+  padding: 5px 0;
+  border-bottom: 1px solid #d0d0d0;
+  break-inside: avoid;
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.item-name {
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.item-sku,
+.item-variation {
+  display: block;
+  font-size: 11px;
+  color: #333;
+  font-weight: 400;
+  margin-top: 1px;
+}
+
+body[data-ticket-width="58mm"] .item-sku,
+body[data-ticket-width="58mm"] .item-variation {
+  font-size: 10px;
+}
+
+.item-detail,
+.payment-row,
+.totals tr {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 4mm;
+  width: 100%;
+}
+
+.item-detail {
+  margin-top: 3px;
+  font-size: 11px;
+}
+
+body[data-ticket-width="58mm"] .item-detail {
+  font-size: 10px;
+}
+
+.item-total,
+.amount {
+  min-width: 27mm;
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+body[data-ticket-width="58mm"] .item-total,
+body[data-ticket-width="58mm"] .amount {
+  min-width: 22mm;
+}
+
+.totals {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.total-line {
+  margin-bottom: 2px;
+}
+
+.total-line .label {
+  text-align: left;
+}
+
+.total-final {
+  font-weight: 700;
+  border-top: 1px solid #000;
+  margin-top: 5px;
+  padding-top: 5px;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+body[data-ticket-width="58mm"] .total-final {
+  font-size: 15px;
+}
+
+.payment {
+  margin-top: 2px;
+}
+
+.payment-title {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}
+
+body[data-ticket-width="58mm"] .payment-title {
+  font-size: 10px;
+}
+
+.payment span {
+  display: block;
+}
+
+.payment-row {
+  margin-bottom: 2px;
+}
+
+.payment-ref {
+  font-size: 11px;
+  color: #333;
+  margin: -1px 0 3px;
+}
+
+body[data-ticket-width="58mm"] .payment-ref {
+  font-size: 10px;
+}
+
+.pos-id {
+  text-align: center;
+  font-size: 11px;
+  color: #4c4c4c;
+  margin-top: 7px;
+}
+
+body[data-ticket-width="58mm"] .pos-id {
+  font-size: 10px;
+}
+
+.footer {
+  text-align: center;
+  font-size: 11px;
+  margin-top: 8px;
+  line-height: 1.3;
+}
+
+body[data-ticket-width="58mm"] .footer {
+  font-size: 10px;
+}
+
+.rootlabs-credit {
+  text-align: center;
+  font-size: 11px;
+  margin-top: 7px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+body[data-ticket-width="58mm"] .rootlabs-credit {
+  font-size: 10px;
+}
+
+.ticket-bottom-spacer {
+  height: 12mm;
+  line-height: 6mm;
+  font-size: 1px;
+}
+
+@media print {
+  body {
+    width: 74mm;
+  }
+
+  body[data-ticket-width="58mm"] {
+    width: 54mm;
+  }
+
+  .sep {
+    border-top: 1px dashed #000;
+  }
+}
+
+.gift-title {
+  text-align: center;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin: 5px 0 6px;
+}
+
+body[data-ticket-width="58mm"] .gift-title {
+  font-size: 15px;
+}
+
+.gift-policy {
+  text-align: center;
+  font-size: 11px;
+  margin-top: 8px;
+}
+
+body[data-ticket-width="58mm"] .gift-policy {
+  font-size: 10px;
+}

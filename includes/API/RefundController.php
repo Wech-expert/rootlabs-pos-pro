@@ -291,6 +291,16 @@ class RefundController
 
     private function unexpected_error(\Throwable $e, string $context, int $saleId): WP_Error
     {
+        error_log(
+            sprintf(
+                '[MX POS Pro] RefundController %s failed for sale %d: %s in %s:%d',
+                $context,
+                $saleId,
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            )
+        );
 
         return new WP_Error(
             'mx_pos_refund_unexpected_error',

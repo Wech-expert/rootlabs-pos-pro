@@ -77,13 +77,7 @@ class ProductCatalogController
         $groups = [];
 
         foreach ($rows as $row) {
-            $group_id = (int) ($row['catalog_group_id'] ?? 0);
-
-            if ($group_id <= 0) {
-                $parent_id = isset($row['parent_id']) ? (int) $row['parent_id'] : 0;
-                $product_id = isset($row['product_id']) ? (int) $row['product_id'] : 0;
-                $group_id = $parent_id > 0 ? $parent_id : $product_id;
-            }
+            $group_id = (int) ($row['catalog_group_id'] ?? $row['product_id'] ?? 0);
 
             if ($group_id <= 0) {
                 continue;

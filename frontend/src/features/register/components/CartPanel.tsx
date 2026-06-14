@@ -70,10 +70,32 @@ function CartPanel({
   return (
     <div className="mx-register-cart">
       <div className="mx-register-cart__header">
-        <h3 className="mx-register-cart__title">Carrito</h3>
+        <div className="mx-register-cart__header-main">
+          <h3 className="mx-register-cart__title">Carrito</h3>
         {totalItems > 0 && (
           <span className="mx-register-cart__badge">{totalItems}</span>
         )}
+        </div>
+        <div className="mx-register-cart__header-actions">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={onShowParkedCarts}
+            disabled={cartState === 'validating'}
+            className="mx-register-cart__header-action mx-register-cart__header-action--saved"
+          >
+            Carritos guardados
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={onParkCart}
+            disabled={cartState === 'validating'}
+            className="mx-register-cart__header-action mx-register-cart__header-action--save"
+          >
+            Guardar carrito
+          </Button>
+        </div>
       </div>
 
       <div className="mx-register-cart__customer-area">

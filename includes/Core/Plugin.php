@@ -70,13 +70,10 @@ class Plugin
         require_once MX_POS_PRO_INCLUDES . 'Products/ProductSearch.php';
         require_once MX_POS_PRO_INCLUDES . 'Products/ProductIndexer.php';
         require_once MX_POS_PRO_INCLUDES . 'Products/ProductIndexHooks.php';
-        require_once MX_POS_PRO_INCLUDES . 'Products/ProductIndexBootstrap.php';
 
         (new \MXPOSPro\Products\ProductIndexHooks(
             new \MXPOSPro\Products\ProductIndexRepository()
         ))->register();
-
-        \MXPOSPro\Products\ProductIndexBootstrap::register();
 
         require_once MX_POS_PRO_INCLUDES . 'API/ProductSearchController.php';
         require_once MX_POS_PRO_INCLUDES . 'API/ProductCatalogController.php';

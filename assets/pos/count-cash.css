@@ -1,0 +1,498 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            background-image: radial-gradient(#d4d4d4 1px, transparent 1px);
+            background-size: 20px 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: #1b1b1b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        body::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            width: 45vw;
+            height: 45vw;
+            background: radial-gradient(circle, rgba(171, 194, 255, 0.4) 0%, transparent 70%);
+            bottom: -5vw;
+            right: -10vw;
+        }
+
+        .mx-card {
+            width: 100%;
+            max-width: 1080px;
+            margin: 16px;
+            padding: 32px 40px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .mx-card__brand {
+            font-size: 24px;
+            line-height: 30px;
+            font-weight: 800;
+            margin: 0;
+            text-align: center;
+            letter-spacing: -0.02em;
+        }
+
+        .mx-card__title {
+            font-size: 13px;
+            line-height: 18px;
+            color: #7e7e7e;
+            margin: 2px 0 14px;
+            text-align: center;
+        }
+
+        .mx-card__context {
+            font-size: 13px;
+            line-height: 18px;
+            color: #1b1b1b;
+            margin: 0 0 18px;
+            text-align: center;
+        }
+
+        .mx-card__error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+
+        .mx-card__form {
+            display: grid;
+            grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr);
+            gap: 16px 20px;
+            align-items: start;
+        }
+
+        .mx-card__denom-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            min-width: 0;
+        }
+
+        .mx-card__section-title {
+            font-size: 12px;
+            line-height: 16px;
+            font-weight: 800;
+            letter-spacing: .02em;
+            color: #1b1b1b;
+            margin: 0;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #dcdcdc;
+        }
+
+        .mx-card__denom-row {
+            display: grid;
+            grid-template-columns: minmax(120px, 1fr) 92px 96px;
+            align-items: center;
+            gap: 10px;
+            min-height: 38px;
+            padding: 4px 0;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .mx-card__denom-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .mx-card__denom-label {
+            font-size: 13px;
+            line-height: 18px;
+            font-weight: 500;
+            color: #1b1b1b;
+        }
+
+        .mx-card__denom-input {
+            width: 92px;
+            height: 30px;
+            padding: 4px 8px;
+            font-size: 13px;
+            line-height: 18px;
+            border: 1px solid #d4d4d4;
+            border-radius: 4px;
+            background: #fff;
+            color: #1b1b1b;
+            text-align: center;
+            outline: none;
+        }
+
+        .mx-card__denom-input:focus {
+            border-color: #1b1b1b;
+        }
+
+        .mx-card__denom-subtotal {
+            font-size: 13px;
+            line-height: 18px;
+            color: #4c4c4c;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .mx-card__actions {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-top: 0;
+        }
+
+        .mx-card__total {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 2px;
+            padding: 12px 0 0;
+            border-top: 2px solid #1b1b1b;
+        }
+
+        .mx-card__total-label {
+            font-size: 15px;
+            line-height: 20px;
+            font-weight: 800;
+        }
+
+        .mx-card__total-amount {
+            font-size: 20px;
+            line-height: 28px;
+            font-weight: 900;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .mx-card__submit {
+            min-width: 260px;
+            height: 42px;
+            padding: 0 24px;
+            font-size: 14px;
+            font-weight: 800;
+            color: #fff;
+            background: #1b1b1b;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .mx-card__submit:hover {
+            background: #000;
+        }
+
+        .mx-canvas-logout {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            display: inline-block;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+            background: #e11d48;
+            border-radius: 8px;
+            text-decoration: none;
+            z-index: 20;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .mx-canvas-logout:hover {
+            background: #be123c;
+            transform: translateY(-1px);
+        }
+
+        @media (max-height: 800px) {
+            .mx-card {
+                margin-top: 14px;
+                margin-bottom: 14px;
+                padding: 18px 24px 16px;
+            }
+
+            .mx-card__brand {
+                font-size: 22px;
+                line-height: 28px;
+            }
+
+            .mx-card__title {
+                margin-bottom: 10px;
+            }
+
+            .mx-card__context {
+                margin-bottom: 12px;
+            }
+
+            .mx-card__form {
+                gap: 10px 18px;
+            }
+
+            .mx-card__denom-row {
+                min-height: 34px;
+                padding: 2px 0;
+            }
+
+            .mx-card__denom-input {
+                height: 28px;
+            }
+
+            .mx-card__total {
+                padding-top: 10px;
+            }
+
+            .mx-card__submit {
+                height: 40px;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .mx-card {
+                width: calc(100vw - 24px);
+                margin: 12px auto;
+                padding: 20px 18px;
+            }
+
+            .mx-card__form {
+                grid-template-columns: 1fr;
+            }
+
+            .mx-card__denom-row {
+                grid-template-columns: minmax(100px, 1fr) 84px 84px;
+            }
+
+            .mx-card__denom-input {
+                width: 84px;
+            }
+
+            .mx-card__submit {
+                width: 100%;
+                min-width: 0;
+                justify-self: stretch;
+            }
+        }
+
+        /* Cash denomination counter polish */
+
+        .mx-card__brand {
+            font-size: 23px;
+            line-height: 28px;
+            margin-bottom: 2px;
+        }
+
+        .mx-card__title {
+            margin-bottom: 12px;
+        }
+
+        .mx-card__context {
+            margin-bottom: 18px;
+        }
+
+        .mx-card__form {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, .9fr);
+            gap: 16px 18px;
+            align-items: start;
+        }
+
+        .mx-card__denom-section {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            padding: 12px 14px 10px;
+            background: #fbfbfb;
+            border: 1px solid #e6e6e6;
+            border-radius: 8px;
+        }
+
+        .mx-card__denom-section--bills {
+            background: #ffffff;
+        }
+
+        .mx-card__section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0 0 6px;
+            padding: 0 0 8px;
+            border-bottom: 1px solid #d9d9d9;
+            font-size: 12px;
+            line-height: 16px;
+            font-weight: 800;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .mx-card__denom-row {
+            display: grid;
+            grid-template-columns: minmax(124px, 1fr) 92px 88px;
+            align-items: center;
+            gap: 10px;
+            min-height: 38px;
+            padding: 4px 0;
+            border-bottom: 1px solid #ececec;
+        }
+
+        .mx-card__denom-row:last-child {
+            border-bottom: none;
+        }
+
+        .mx-card__denom-label {
+            font-size: 13px;
+            line-height: 18px;
+            font-weight: 600;
+            color: #1b1b1b;
+        }
+
+        .mx-card__denom-input {
+            width: 92px;
+            height: 30px;
+            padding: 4px 8px;
+            font-size: 13px;
+            line-height: 18px;
+            font-weight: 700;
+            text-align: center;
+            border: 1px solid #cfcfcf;
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        .mx-card__denom-input:focus {
+            border-color: #000;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, .08);
+        }
+
+        .mx-card__denom-subtotal {
+            font-size: 13px;
+            line-height: 18px;
+            font-weight: 700;
+            color: #1b1b1b;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .mx-card__total {
+            grid-column: 1 / -1;
+            margin-top: 0;
+            padding: 14px 16px;
+            background: #f7f7f7;
+            border: 1px solid #dadada;
+            border-top: 2px solid #1b1b1b;
+            border-radius: 8px;
+        }
+
+        .mx-card__total-label {
+            font-size: 15px;
+            line-height: 20px;
+            font-weight: 900;
+        }
+
+        .mx-card__total-amount {
+            font-size: 22px;
+            line-height: 28px;
+            font-weight: 900;
+        }
+
+        .mx-card__actions {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-top: -2px;
+        }
+
+        .mx-card__submit {
+            width: min(280px, 100%);
+            min-width: 260px;
+            height: 44px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+
+
+        @media (max-height: 800px) {
+            .mx-card {
+                margin-top: 12px;
+                padding: 18px 22px 16px;
+            }
+
+            .mx-card__context {
+                margin-bottom: 12px;
+            }
+
+            .mx-card__form {
+                gap: 12px 16px;
+            }
+
+            .mx-card__denom-section {
+                padding: 10px 12px 8px;
+            }
+
+            .mx-card__denom-row {
+                min-height: 34px;
+                padding: 2px 0;
+            }
+
+            .mx-card__denom-input {
+                height: 28px;
+            }
+
+            .mx-card__total {
+                padding: 12px 14px;
+            }
+
+            .mx-card__submit {
+                height: 40px;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .mx-card {
+                width: calc(100vw - 24px);
+                margin: 12px auto;
+                padding: 18px 16px;
+            }
+
+            .mx-card__form {
+                grid-template-columns: 1fr;
+            }
+
+            .mx-card__denom-row {
+                grid-template-columns: minmax(100px, 1fr) 84px 84px;
+            }
+
+            .mx-card__denom-input {
+                width: 84px;
+            }
+
+            .mx-card__actions {
+                justify-content: stretch;
+            }
+
+            .mx-card__submit {
+                width: 100%;
+                min-width: 0;
+            }
+        }

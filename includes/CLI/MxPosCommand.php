@@ -1,20 +1,5 @@
 <?php
 
-
-/**
- * RootLabs POS uses custom operational tables for POS data.
- * These database calls are intentional and isolated in repository/service layers.
- *
- * rootlabs-pos-pro-w2a-db-intentional
- *
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
- * phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
- * phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
- * phpcs:disable WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
- * phpcs:disable PluginCheck.Security.DirectDB.UnescapedDBParameter
- */
-
 namespace MXPOSPro\CLI;
 
 defined('ABSPATH') || exit;
@@ -25,7 +10,7 @@ use MXPOSPro\Database\Migrator;
 use MXPOSPro\Database\Schema;
 
 /**
- * RootLabs POS diagnostic and support commands.
+ * MX POS Pro diagnostic and support commands.
  *
  * ## EXAMPLES
  *
@@ -476,7 +461,7 @@ class MxPosCommand
      * Extended diagnostic for technical support.
      *
      * Combines healthcheck, db-check, caps-check, table counts,
-     * operational status, and known risk flags.
+     * operational status, and Sprint 24 risk flags.
      *
      * ## OPTIONS
      *
@@ -507,7 +492,7 @@ class MxPosCommand
 
         $report = [];
 
-        $report['plugin_name']    = 'RootLabs POS';
+        $report['plugin_name']    = 'MX POS Pro';
         $report['plugin_version'] = MX_POS_PRO_VERSION;
 
         $report['healthcheck']   = $this->collect_healthcheck();
@@ -560,12 +545,12 @@ class MxPosCommand
         }
 
         WP_CLI::line('');
-        WP_CLI::line('RootLabs POS — Diagnostic Report');
+        WP_CLI::line('MX POS Pro — Diagnostic Report');
         WP_CLI::line(str_repeat('=', 40));
         $status_line = "Status: {$report['overall_status']}";
 
         if ($risk_count > 0) {
-            $status_line .= " ({$risk_count} risk " . ($risk_count === 1 ? 'flag' : 'flags') . ')';
+            $status_line .= " ({$risk_count} risk " . ($risk_count === 1 ? 'flag' : 'flags') . ' from Sprint 24 backlog)';
         }
 
         WP_CLI::line($status_line);
@@ -615,7 +600,7 @@ class MxPosCommand
         WP_CLI::line('');
 
         if ($risk_count > 0) {
-            WP_CLI::line('Operational Risk Flags');
+            WP_CLI::line('Risk Flags (Sprint 24 Backlog)');
             WP_CLI::line(str_repeat('-', 40));
             $risk_rows = [];
             foreach ($report['risk_flags'] as $flag) {
@@ -635,7 +620,7 @@ class MxPosCommand
 
         if ($risk_count > 0) {
             WP_CLI::warning(
-                "{$risk_count} risk " . ($risk_count === 1 ? 'flag' : 'flags') . '. These are informational and do not block operation.'
+                "{$risk_count} risk " . ($risk_count === 1 ? 'flag' : 'flags') . ' from Sprint 24 backlog. These are informational and do not block operation.'
             );
         }
 
@@ -649,7 +634,7 @@ class MxPosCommand
         return [
             'check'   => 'Plugin loaded',
             'status'  => 'OK',
-            'details' => 'RootLabs POS ' . MX_POS_PRO_VERSION,
+            'details' => 'MX POS Pro ' . MX_POS_PRO_VERSION,
         ];
     }
 
@@ -920,9 +905,7 @@ class MxPosCommand
         $params[] = $limit;
         $sql      = "SELECT * FROM `{$table}` WHERE {$where} ORDER BY opened_at DESC, id DESC LIMIT %d";
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- SQL contains only internal table identifiers and fixed WHERE fragments; dynamic values are prepared.
         $prepared = $wpdb->prepare($sql, $params);
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Query is prepared immediately above.
         $rows     = $wpdb->get_results($prepared, ARRAY_A);
 
         if (! is_array($rows) || count($rows) === 0) {
@@ -985,9 +968,7 @@ class MxPosCommand
         $params[] = $limit;
         $sql      = "SELECT * FROM `{$table}` WHERE {$where} ORDER BY generated_at DESC, id DESC LIMIT %d";
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- SQL contains only internal table identifiers and fixed WHERE fragments; dynamic values are prepared.
         $prepared = $wpdb->prepare($sql, $params);
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Query is prepared immediately above.
         $rows     = $wpdb->get_results($prepared, ARRAY_A);
 
         if (! is_array($rows) || count($rows) === 0) {

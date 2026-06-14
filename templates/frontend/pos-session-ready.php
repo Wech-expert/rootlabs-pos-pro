@@ -1,15 +1,5 @@
 <?php
 
-
-/**
- * Template variables are local view variables provided by the POS route renderer.
- *
- * rootlabs-pos-pro-w2a-template-vars
- *
- * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
- * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
- */
-
 defined('ABSPATH') || exit;
 
 $employee   = $employee ?? [];
@@ -49,7 +39,7 @@ $is_real_session = ($state === 'session');
     <meta charset="<?php echo esc_attr(get_bloginfo('charset', 'display')); ?>" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex,nofollow" />
-    <title><?php echo esc_html__('RootLabs POS', 'mx-pos-pro'); ?></title>
+    <title><?php echo esc_html__('Rootlabs Pos Pro', 'mx-pos-pro'); ?></title>
     <style>
         *, *::before, *::after { box-sizing: border-box; }
         html, body {
@@ -149,7 +139,7 @@ $is_real_session = ($state === 'session');
 </head>
 <body>
     <main class="mx-card">
-        <p class="mx-card__brand">RootLabs POS</p>
+        <p class="mx-card__brand">MX POS Pro</p>
         <p class="mx-card__title">
             <?php if ($is_real_session): ?>
                 <?php echo esc_html__('Sesión de caja activa', 'mx-pos-pro'); ?>

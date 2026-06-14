@@ -61,7 +61,6 @@ class Assets
         }
 
         printf(
-            // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Standalone POS shell prints the compiled Vite stylesheet directly.
             '<link rel="stylesheet" href="%s" />' . "\n",
             esc_url($asset_data['css_url'])
         );
@@ -80,7 +79,6 @@ class Assets
             wp_json_encode($asset_data['settings'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)
         );
         printf(
-            // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- Standalone POS shell prints the compiled Vite script directly.
             '<script type="module" src="%s"></script>' . "\n",
             esc_url($asset_data['js_url'])
         );

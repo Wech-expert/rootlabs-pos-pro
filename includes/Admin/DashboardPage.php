@@ -1,15 +1,5 @@
 <?php
 
-
-/**
- * This admin screen reads GET parameters for filtering/pagination only.
- * State-changing actions are handled separately with explicit capability/nonce checks.
- *
- * rootlabs-pos-pro-w2a-readonly-get-filters
- *
- * phpcs:disable WordPress.Security.NonceVerification.Recommended
- */
-
 namespace MXPOSPro\Admin;
 
 defined('ABSPATH') || exit;
@@ -26,8 +16,8 @@ class DashboardPage
             );
         }
 
-        $dateFrom  = isset($_GET['dashboard_date_from']) ? sanitize_text_field(wp_unslash($_GET['dashboard_date_from'])) : gmdate('Y-m-d');
-        $dateTo    = isset($_GET['dashboard_date_to']) ? sanitize_text_field(wp_unslash($_GET['dashboard_date_to'])) : gmdate('Y-m-d');
+        $dateFrom  = isset($_GET['dashboard_date_from']) ? sanitize_text_field(wp_unslash($_GET['dashboard_date_from'])) : date('Y-m-d');
+        $dateTo    = isset($_GET['dashboard_date_to']) ? sanitize_text_field(wp_unslash($_GET['dashboard_date_to'])) : date('Y-m-d');
         $branchId  = isset($_GET['branch_id']) ? absint($_GET['branch_id']) : null;
         $registerId = isset($_GET['register_id']) ? absint($_GET['register_id']) : null;
         $employeeId = isset($_GET['employee_id']) ? absint($_GET['employee_id']) : null;
@@ -104,7 +94,7 @@ class DashboardPage
                 </label>
                 <label style="align-self:flex-end;">
                     <br/>
-                    <a href="<?php echo esc_url(add_query_arg(['dashboard_date_from' => gmdate('Y-m-d'), 'dashboard_date_to' => gmdate('Y-m-d'), 'branch_id' => null, 'register_id' => null, 'employee_id' => null], $baseUrl)); ?>" class="button">
+                    <a href="<?php echo esc_url(add_query_arg(['dashboard_date_from' => date('Y-m-d'), 'dashboard_date_to' => date('Y-m-d'), 'branch_id' => null, 'register_id' => null, 'employee_id' => null], $baseUrl)); ?>" class="button">
                         <?php esc_html_e('Hoy', 'mx-pos-pro'); ?>
                     </a>
                 </label>

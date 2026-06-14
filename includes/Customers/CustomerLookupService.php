@@ -1,30 +1,5 @@
 <?php
 
-
-
-/**
- * WooCommerce customer/order lookup intentionally uses meta_query for compatibility
- * with WooCommerce data stored in post/user meta.
- *
- * rootlabs-pos-pro-w3-meta-query-intentional
- *
- * phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_query
- */
-
-/**
- * RootLabs POS uses custom operational tables for POS data.
- * These database calls are intentional and isolated in repository/service layers.
- *
- * rootlabs-pos-pro-w2a-db-intentional
- *
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
- * phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
- * phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
- * phpcs:disable WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
- * phpcs:disable PluginCheck.Security.DirectDB.UnescapedDBParameter
- */
-
 namespace MXPOSPro\Customers;
 
 defined('ABSPATH') || exit;

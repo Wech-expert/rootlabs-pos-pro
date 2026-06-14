@@ -1,20 +1,5 @@
 <?php
 
-
-/**
- * RootLabs POS uses custom operational tables for POS data.
- * These database calls are intentional and isolated in repository/service layers.
- *
- * rootlabs-pos-pro-w2a-db-intentional
- *
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
- * phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
- * phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
- * phpcs:disable WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
- * phpcs:disable PluginCheck.Security.DirectDB.UnescapedDBParameter
- */
-
 namespace MXPOSPro\Products;
 
 defined('ABSPATH') || exit;
@@ -175,19 +160,11 @@ class ProductIndexRepository
 
         $group_ids = $wpdb->get_col(
             $wpdb->prepare(
-                "SELECT CASE
-                    WHEN catalog_group_id > 0 THEN catalog_group_id
-                    WHEN parent_id IS NOT NULL AND parent_id > 0 THEN parent_id
-                    ELSE product_id
-                 END AS catalog_group_id
+                "SELECT catalog_group_id
                  FROM {$this->table}
                  WHERE status = %s
                    AND stock_status != %s
-                 GROUP BY CASE
-                    WHEN catalog_group_id > 0 THEN catalog_group_id
-                    WHEN parent_id IS NOT NULL AND parent_id > 0 THEN parent_id
-                    ELSE product_id
-                 END
+                 GROUP BY catalog_group_id
                  ORDER BY MAX(indexed_at) DESC, catalog_group_id DESC
                  LIMIT %d",
                 'publish',
@@ -219,11 +196,7 @@ class ProductIndexRepository
 
         $group_ids = $wpdb->get_col(
             $wpdb->prepare(
-                "SELECT CASE
-                    WHEN catalog_group_id > 0 THEN catalog_group_id
-                    WHEN parent_id IS NOT NULL AND parent_id > 0 THEN parent_id
-                    ELSE product_id
-                 END AS catalog_group_id
+                "SELECT catalog_group_id
                  FROM {$this->table}
                  WHERE status = %s
                    AND stock_status != %s
@@ -233,11 +206,7 @@ class ProductIndexRepository
                      OR name_normalized LIKE %s
                      OR searchable_text LIKE %s
                    )
-                 GROUP BY CASE
-                    WHEN catalog_group_id > 0 THEN catalog_group_id
-                    WHEN parent_id IS NOT NULL AND parent_id > 0 THEN parent_id
-                    ELSE product_id
-                 END
+                 GROUP BY catalog_group_id
                  ORDER BY
                      MIN(CASE
                          WHEN sku_normalized = %s THEN 0
@@ -333,21 +302,10 @@ class ProductIndexRepository
             $wpdb->prepare(
                 "SELECT *
                  FROM {$this->table}
-                 WHERE CASE
-                    WHEN catalog_group_id > 0 THEN catalog_group_id
-                    WHEN parent_id IS NOT NULL AND parent_id > 0 THEN parent_id
-                    ELSE product_id
-                 END IN ({$placeholders})
+                 WHERE catalog_group_id IN ({$placeholders})
                    AND status = %s
                    AND stock_status != %s
-                 ORDER BY FIELD(
-                    CASE
-                        WHEN catalog_group_id > 0 THEN catalog_group_id
-                        WHEN parent_id IS NOT NULL AND parent_id > 0 THEN parent_id
-                        ELSE product_id
-                    END,
-                    {$placeholders}
-                 ),
+                 ORDER BY FIELD(catalog_group_id, {$placeholders}),
                    CASE WHEN variation_id IS NULL THEN 0 ELSE 1 END,
                    name ASC",
                 ...array_merge($group_ids, ['publish', 'outofstock'], $group_ids)
@@ -418,22 +376,10 @@ class ProductIndexRepository
         $parent_id = isset($row['parent_id']) && $row['parent_id'] !== null
             ? (int) $row['parent_id']
             : null;
-        $catalog_group_id = (int) ($row['catalog_group_id'] ?? 0);
-
-        if ($catalog_group_id <= 0) {
-            $catalog_group_id = $parent_id ?: $product_id;
-        }
+        $catalog_group_id = (int) ($row['catalog_group_id'] ?? ($parent_id ?: $product_id));
         $sku = (string) ($row['sku'] ?? '');
         $name = (string) ($row['name'] ?? '');
-        $parent_name = (string) ($row['parent_name'] ?? '');
-        $variation_label = (string) ($row['variation_label'] ?? '');
-        $searchable_text = (string) ($row['searchable_text'] ?? implode(' ', array_filter([
-            $sku,
-            $name,
-            $parent_name,
-            $variation_label,
-            (string) ($row['type'] ?? ''),
-        ])));
+        $searchable_text = (string) ($row['searchable_text'] ?? implode(' ', array_filter([$sku, $name])));
 
         return [
             'object_id'        => $object_id,
@@ -445,8 +391,8 @@ class ProductIndexRepository
             'sku_normalized'   => self::normalize_search_value((string) ($row['sku_normalized'] ?? $sku)),
             'name'             => $name,
             'name_normalized'  => self::normalize_search_value((string) ($row['name_normalized'] ?? $name)),
-            'parent_name'      => $parent_name,
-            'variation_label'  => $variation_label,
+            'parent_name'      => (string) ($row['parent_name'] ?? ''),
+            'variation_label'  => (string) ($row['variation_label'] ?? ''),
             'type'             => (string) ($row['type'] ?? 'simple'),
             'status'           => (string) ($row['status'] ?? 'publish'),
             'is_purchasable'   => ! empty($row['is_purchasable']) ? 1 : 0,

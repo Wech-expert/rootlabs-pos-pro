@@ -1,24 +1,10 @@
 <?php
-
 declare(strict_types=1);
-
-
-/**
- * Request superglobals are checked/sanitized before operational use.
- *
- * rootlabs-pos-pro-w2a-request-superglobals
- *
- * phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
- */
 
 namespace MXPOSPro\Core;
 
 use MXPOSPro\Auth\POSAuthService;
 use MXPOSPro\Entities\EmployeeRepository;
-
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
 
 final class POSCapabilityBridge
 {
@@ -105,12 +91,8 @@ final class POSCapabilityBridge
 
     private static function is_pos_context(): bool
     {
-        $mx_pos_pro_request_uri = isset( $mx_pos_pro_request_uri )
-            ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) )
-            : '';
-
-        $uri = isset($mx_pos_pro_request_uri) ? (string) $mx_pos_pro_request_uri : '';
-        $path = (string) wp_parse_url($uri, PHP_URL_PATH);
+        $uri = isset($_SERVER['REQUEST_URI']) ? (string) $_SERVER['REQUEST_URI'] : '';
+        $path = (string) parse_url($uri, PHP_URL_PATH);
 
         if (strpos($path, '/wp-json/mx-pos/v1/') !== false) {
             return true;
@@ -145,6 +127,7 @@ final class POSCapabilityBridge
             $auth = new POSAuthService(new EmployeeRepository());
             $employee = $auth->get_current_employee();
         } catch (\Throwable $e) {
+            error_log('[MX POS Pro] POSCapabilityBridge employee lookup failed: ' . $e->getMessage());
             $employee = null;
         }
 

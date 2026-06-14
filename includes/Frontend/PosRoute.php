@@ -1,28 +1,5 @@
 <?php
 
-
-
-/**
- * Frontend POS route processes login and cash-count forms.
- * Password values are intentionally not passed through text sanitizers because doing so
- * could alter valid password characters before authentication.
- *
- * Denomination arrays are normalized by the POS cash-count flow before persistence.
- *
- * rootlabs-pos-pro-w3-posroute-form-fields
- *
- * phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
- * phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
- */
-
-/**
- * Request superglobals are checked/sanitized before operational use.
- *
- * rootlabs-pos-pro-w2a-request-superglobals
- *
- * phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
- */
-
 namespace MXPOSPro\Frontend;
 
 defined('ABSPATH') || exit;

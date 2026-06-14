@@ -17,7 +17,7 @@ class Activation
 
             wp_die(
                 esc_html__(
-                    'RootLabs POS requires WooCommerce to be installed and activated.',
+                    'MX POS Pro requires WooCommerce to be installed and activated.',
                     'mx-pos-pro'
                 ),
                 esc_html__('Plugin Activation Error', 'mx-pos-pro'),

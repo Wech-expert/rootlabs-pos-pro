@@ -1,16 +1,6 @@
 <?php
-
 /**
- * Template variables are local view variables provided by the POS route renderer.
- *
- * rootlabs-pos-pro-w2a-template-vars
- *
- * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
- * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
- */
-
-/**
- * Non-destructive uninstall routine for RootLabs POS.
+ * Non-destructive uninstall routine for MX POS Pro.
  *
  * Uninstall normal preserves business data. Sales, cash sessions,
  * movements, parked carts, refunds, audit logs, product index rows,
@@ -37,5 +27,5 @@ if (is_readable($capabilities_file)) {
 }
 
 // No plugin-owned scheduled hooks are registered in RC1.
-// Plugin settings and database tables are preserved to prevent accidental business data loss
+// Plugin settings and database tables are preserved for staging diagnostics
 // and to avoid accidental loss of POS business history.

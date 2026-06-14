@@ -1,19 +1,5 @@
 <?php
 
-
-/**
- * RootLabs POS creates and migrates its own custom tables.
- * Schema changes are intentional during plugin activation/upgrade.
- *
- * rootlabs-pos-pro-w2a-migrator-intentional
- *
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
- * phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.SchemaChange
- * phpcs:disable PluginCheck.Security.DirectDB.UnescapedDBParameter
- */
-
 namespace MXPOSPro\Database;
 
 defined('ABSPATH') || exit;
@@ -177,7 +163,6 @@ class Migrator
 
         $sql = "ALTER TABLE `{$table}` ADD UNIQUE KEY unique_final_z (session_id, is_final)";
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Schema migration SQL uses internal table and column identifiers with no user input.
         $wpdb->query($sql);
     }
 
@@ -898,7 +883,6 @@ class Migrator
 
         foreach ($cols as $col => $sql) {
             if (! self::column_exists('mx_pos_payment_methods', $col)) {
-                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Schema migration SQL uses internal table and column identifiers with no user input.
                 $wpdb->query($sql);
                 $added = true;
             }

@@ -1,15 +1,5 @@
 <?php
 
-
-/**
- * Template variables are local view variables provided by the POS route renderer.
- *
- * rootlabs-pos-pro-w2a-template-vars
- *
- * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
- * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
- */
-
 defined('ABSPATH') || exit;
 
 $employee   = $employee ?? [];
@@ -23,7 +13,7 @@ $display_name = isset($employee['display_name']) ? $employee['display_name'] : '
     <meta charset="<?php echo esc_attr(get_bloginfo('charset', 'display')); ?>" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex,nofollow" />
-    <title><?php echo esc_html__('RootLabs POS', 'mx-pos-pro'); ?></title>
+    <title><?php echo esc_html__('Rootlabs Pos Pro', 'mx-pos-pro'); ?></title>
     <style>
         *, *::before, *::after { box-sizing: border-box; }
         html, body {
@@ -86,7 +76,7 @@ $display_name = isset($employee['display_name']) ? $employee['display_name'] : '
 </head>
 <body>
     <main class="mx-auth-ok">
-        <p class="mx-auth-ok__brand">RootLabs POS</p>
+        <p class="mx-auth-ok__brand">MX POS Pro</p>
         <p class="mx-auth-ok__title"><?php echo esc_html__('Sesión POS iniciada', 'mx-pos-pro'); ?></p>
         <p class="mx-auth-ok__name">
             <?php
@@ -102,7 +92,7 @@ $display_name = isset($employee['display_name']) ? $employee['display_name'] : '
 
         <div class="mx-auth-ok__notice">
             <?php echo esc_html__(
-                'Para continuar, abre una sesión de caja.',
+                'Para continuar, falta abrir una sesión de caja. Esta pantalla se conectará al flujo de apertura en el siguiente sprint.',
                 'mx-pos-pro'
             ); ?>
         </div>

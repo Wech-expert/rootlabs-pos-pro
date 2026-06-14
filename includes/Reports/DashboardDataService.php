@@ -1,20 +1,5 @@
 <?php
 
-
-/**
- * RootLabs POS uses custom operational tables for POS data.
- * These database calls are intentional and isolated in repository/service layers.
- *
- * rootlabs-pos-pro-w2a-db-intentional
- *
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
- * phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
- * phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
- * phpcs:disable WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
- * phpcs:disable PluginCheck.Security.DirectDB.UnescapedDBParameter
- */
-
 namespace MXPOSPro\Reports;
 
 defined('ABSPATH') || exit;
@@ -82,7 +67,6 @@ class DashboardDataService
 
         $whereStr = implode(' AND ', $where);
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Internal table identifiers and fixed WHERE fragments; dynamic values are prepared.
         $salesSql = $wpdb->prepare(
             "SELECT COALESCE(SUM(total), 0) AS gross_sales, COUNT(*) AS ticket_count
              FROM {$this->salesTable} {$salesAlias}
@@ -90,7 +74,6 @@ class DashboardDataService
             ...$args
         );
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Query is prepared immediately above.
         $row = $wpdb->get_row($salesSql, ARRAY_A);
         $grossSales  = (float) ($row['gross_sales'] ?? 0);
         $ticketCount = (int) ($row['ticket_count'] ?? 0);
@@ -102,14 +85,12 @@ class DashboardDataService
         $this->build_where($refundWhere, $refundArgs, 'session_id', null);
 
         $refundWhereStr = implode(' AND ', $refundWhere);
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Internal table identifiers and fixed WHERE fragments; dynamic values are prepared.
         $refundSql = $wpdb->prepare(
             "SELECT COALESCE(SUM(refund_amount), 0) AS refund_total, COUNT(*) AS refund_count
              FROM {$this->refundsTable}
              WHERE {$refundWhereStr}",
             ...$refundArgs
         );
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Query is prepared immediately above.
         $refundRow = $wpdb->get_row($refundSql, ARRAY_A);
 
         $sessionWhere   = [];
@@ -123,7 +104,6 @@ class DashboardDataService
         $openArgs = array_merge($sessionArgs, ['open']);
         $openCount = (int) $wpdb->get_var(
             $wpdb->prepare(
-                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Internal table identifier and fixed WHERE fragments; dynamic values are prepared.
                 "SELECT COUNT(*) FROM {$this->sessionsTable} WHERE " . implode(' AND ', $openWhere),
                 ...$openArgs
             )
@@ -132,15 +112,12 @@ class DashboardDataService
         $closedWhere = $sessionWhere;
         $closedWhere[] = 'status = %s';
         $closedArgs = array_merge($sessionArgs, ['closed']);
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Internal table identifier and fixed WHERE fragments; dynamic values are prepared.
-        // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared -- $closedWhere is built only from fixed SQL fragments with placeholders; dynamic values are passed to $wpdb->prepare().
         $closedSql = $wpdb->prepare(
             "SELECT COUNT(*) AS closed_count, COALESCE(SUM(closing_expected), 0) AS expected_cash
              FROM {$this->sessionsTable}
              WHERE " . implode(' AND ', $closedWhere),
             ...$closedArgs
         );
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Query is prepared immediately above.
         $closedRow = $wpdb->get_row($closedSql, ARRAY_A);
         $closedCount   = (int) ($closedRow['closed_count'] ?? 0);
         $expectedCash  = (float) ($closedRow['expected_cash'] ?? 0);
@@ -152,7 +129,6 @@ class DashboardDataService
         $diffArgs = array_merge($sessionArgs, ['closed']);
         $diffCount = (int) $wpdb->get_var(
             $wpdb->prepare(
-                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Internal table identifier and fixed WHERE fragments; dynamic values are prepared.
                 "SELECT COUNT(*) FROM {$this->sessionsTable} WHERE " . implode(' AND ', $diffWhere),
                 ...$diffArgs
             )
@@ -165,7 +141,6 @@ class DashboardDataService
         $remoteArgs[]  = 'session_closed_remote';
         $remoteCount = (int) $wpdb->get_var(
             $wpdb->prepare(
-                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Internal table identifier and fixed WHERE fragments; dynamic values are prepared.
                 "SELECT COUNT(*) FROM {$this->auditTable} WHERE " . implode(' AND ', $remoteWhere),
                 ...$remoteArgs
             )

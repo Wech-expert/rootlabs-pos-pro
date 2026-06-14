@@ -199,7 +199,7 @@ final class Schema
             ",
 
             // UNIQUE(session_id, is_final) prevents duplicate Z cuts per session.
-            // If future versions persist multiple X cuts, this index must be
+            // If Sprint 19 ever persists multiple X cuts, this index must be
             // redesigned (e.g. UNIQUE(session_id, cut_type, is_final)).
 
             'mx_pos_cash_cuts' => "

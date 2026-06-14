@@ -1,15 +1,5 @@
 <?php
 
-
-/**
- * Template variables are local view variables provided by the POS route renderer.
- *
- * rootlabs-pos-pro-w2a-template-vars
- *
- * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
- * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
- */
-
 defined('ABSPATH') || exit;
 
 $employee           = $employee ?? [];
@@ -52,7 +42,7 @@ function mx_get_denom_val(array $values, string $key): string
     <meta charset="<?php echo esc_attr(get_bloginfo('charset', 'display')); ?>" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex,nofollow" />
-    <title><?php echo esc_html__('RootLabs POS', 'mx-pos-pro'); ?></title>
+    <title><?php echo esc_html__('Rootlabs Pos Pro', 'mx-pos-pro'); ?></title>
     <style>
         *, *::before, *::after { box-sizing: border-box; }
 
@@ -348,7 +338,7 @@ function mx_get_denom_val(array $values, string $key): string
             }
         }
 
-        /* Cash denomination counter polish */
+        /* Sprint 8 — Conteo inicial polish */
 
         .mx-card__brand {
             font-size: 23px;

@@ -279,9 +279,9 @@ function ShiftKpiModal({ open, sessionId, onClose }: ShiftKpiModalProps) {
                               })}
                             </td>
                             <td className="mx-kpi-table__method">
-                  <div className="mx-pos-payment-method-hotfix-control">
+                  <div className="mx-pos-payment-method-correction-control">
                     <select
-                      className="mx-pos-payment-method-hotfix-select"
+                      className="mx-pos-payment-method-correction-select"
                       value={paymentMethodDrafts[sale.id] ?? normalizePaymentMethod(sale.payment_method)}
                       disabled={updatingPaymentMethodSaleId === sale.id}
                       onChange={(event) =>

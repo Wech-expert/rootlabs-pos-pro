@@ -20,7 +20,7 @@ class Compatibility
     public static function render_missing_wc_notice(): void
     {
         $message = __(
-            'RootLabs POS requires WooCommerce to be installed and activated.',
+            'MX POS Pro requires WooCommerce to be installed and activated.',
             'mx-pos-pro'
         );
 

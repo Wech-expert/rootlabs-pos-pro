@@ -1,20 +1,5 @@
 <?php
 
-
-/**
- * RootLabs POS uses custom operational tables for POS data.
- * These database calls are intentional and isolated in repository/service layers.
- *
- * rootlabs-pos-pro-w2a-db-intentional
- *
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
- * phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
- * phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
- * phpcs:disable WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
- * phpcs:disable PluginCheck.Security.DirectDB.UnescapedDBParameter
- */
-
 namespace MXPOSPro\Auth;
 
 defined('ABSPATH') || exit;
@@ -291,7 +276,7 @@ class POSAuthService
             return null;
         }
 
-        $token = sanitize_text_field( wp_unslash( $_COOKIE[self::COOKIE_NAME] ) );
+        $token = $_COOKIE[self::COOKIE_NAME];
 
         if (! is_string($token) || $token === '') {
             return null;
@@ -481,6 +466,13 @@ class POSAuthService
                 ['%d', '%d', '%d', '%d', '%s', '%s', '%d', '%s', '%s', '%s', '%s']
             );
         } catch (\Exception $e) {
+            error_log(
+                sprintf(
+                    '[MX POS Pro] Audit write failed for action=%s: %s',
+                    $data['action'] ?? 'unknown',
+                    $e->getMessage()
+                )
+            );
         }
     }
 }

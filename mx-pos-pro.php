@@ -1,23 +1,15 @@
 <?php
-
 /**
- * Plugin constants use the historical MX_POS_PRO prefix for backward compatibility.
- *
- * rootlabs-pos-pro-w2a-main-constants
- *
- * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
- */
-
-/**
- * Plugin Name:  RootLabs POS for WooCommerce
+ * Plugin Name:  Rootlabs Pos Pro
  * Plugin URI:   https://rootlabs.mx
- * Description:  Sistema de Punto de Venta open source para WooCommerce. Interfaz React, backend PHP seguro, compatible HPOS.
- * Version:      0.1.1
+ * Description:  Sistema de Punto de Venta premium para WooCommerce. Interfaz React, backend PHP seguro, compatible HPOS.
+ * Version:      1.0.0
  * Author:       rootlabs.mx
  * Author URI:   https://rootlabs.mx
  * License:      GPL-2.0+
  * License URI:  http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:  mx-pos-pro
+ * Domain Path:  /languages
  * Requires PHP: 8.0
  * Requires at least: 6.0
  * WC requires at least: 8.0
@@ -28,7 +20,7 @@
 
 defined('ABSPATH') || exit;
 
-define('MX_POS_PRO_VERSION', '0.1.1');
+define('MX_POS_PRO_VERSION', '1.0.0');
 define('MX_POS_PRO_DB_VERSION', '1.11');
 define('MX_POS_PRO_FILE', __FILE__);
 define('MX_POS_PRO_DIR', plugin_dir_path(__FILE__));

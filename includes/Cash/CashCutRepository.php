@@ -1,20 +1,5 @@
 <?php
 
-
-/**
- * RootLabs POS uses custom operational tables for POS data.
- * These database calls are intentional and isolated in repository/service layers.
- *
- * rootlabs-pos-pro-w2a-db-intentional
- *
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
- * phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
- * phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
- * phpcs:disable WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
- * phpcs:disable PluginCheck.Security.DirectDB.UnescapedDBParameter
- */
-
 namespace MXPOSPro\Cash;
 
 defined('ABSPATH') || exit;
@@ -154,26 +139,20 @@ class CashCutRepository
             $whereArgs[] = $filters['date_to'] . ' 23:59:59';
         }
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Internal table identifier and fixed WHERE fragments; values are prepared below.
         $countQuery = "SELECT COUNT(*) FROM {$this->table} WHERE {$where}";
         if (! empty($whereArgs)) {
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query template uses internal table identifier; placeholders are prepared here.
             $countQuery = $wpdb->prepare($countQuery, ...$whereArgs);
         }
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Query has no user input or was prepared above.
         $total = (int) $wpdb->get_var($countQuery);
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Internal table identifier and fixed WHERE fragments; values are prepared below.
         $dataQuery = "SELECT id, session_id, cut_type, sequence, generated_by, generated_at, is_final
                       FROM {$this->table}
                       WHERE {$where}
                       ORDER BY generated_at DESC, id DESC
                       LIMIT %d OFFSET %d";
         $dataArgs = array_merge($whereArgs, [$perPage, $offset]);
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query template uses internal table identifier; placeholders are prepared here.
         $dataQuery = $wpdb->prepare($dataQuery, ...$dataArgs);
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Query is prepared immediately above.
         $rows = $wpdb->get_results($dataQuery, ARRAY_A);
 
         $cuts = [];

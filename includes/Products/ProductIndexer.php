@@ -35,7 +35,7 @@ class ProductIndexer
     {
         if (! class_exists('WooCommerce')) {
             throw new \RuntimeException(
-                esc_html__('WooCommerce is required to rebuild the product index.', 'mx-pos-pro')
+                __('WooCommerce is required to rebuild the product index.', 'mx-pos-pro')
             );
         }
 
@@ -257,7 +257,7 @@ class ProductIndexer
             'variation_label'  => $variation_label,
             'type'             => $type,
             'status'           => (string) $product->get_status(),
-            'is_purchasable'   => $this->is_pos_purchasable($product, $child_rows) ? 1 : 0,
+            'is_purchasable'   => $product->is_purchasable() ? 1 : 0,
             'stock_quantity'   => $product->get_stock_quantity(),
             'stock_status'     => (string) $product->get_stock_status(),
             'regular_price'    => $product->get_regular_price('edit'),
@@ -290,38 +290,6 @@ class ProductIndexer
         }
 
         return array_values(array_filter(array_map('absint', $children)));
-    }
-
-    /**
-     * POS catalog availability must be catalog-agnostic.
-     *
-     * WooCommerce's is_purchasable() can be false for operational products that
-     * still need to be sold in a physical POS depending on pricing/visibility
-     * configuration. For POS search/catalog we primarily need publish status and
-     * sellable stock. Variable parents are exposed when they have indexed
-     * children; individual variations/simple products require available stock.
-     */
-    private function is_pos_purchasable(\WC_Product $product, array $child_rows = []): bool
-    {
-        if ((string) $product->get_status() !== 'publish') {
-            return false;
-        }
-
-        if (count($child_rows) > 0) {
-            return true;
-        }
-
-        if ((string) $product->get_stock_status() === 'outofstock') {
-            return false;
-        }
-
-        $stock_quantity = $product->get_stock_quantity();
-
-        if ($stock_quantity === null) {
-            return true;
-        }
-
-        return (int) $stock_quantity > 0;
     }
 
     private function is_child_product(\WC_Product $product): bool
@@ -359,112 +327,37 @@ class ProductIndexer
      * @param array<int, array<string, mixed>> $child_rows
      * @return array{display:mixed,min:mixed,max:mixed}
      */
-    private function price_data(\WC_Product $product, array $child_rows = []): array
+    private function price_data(\WC_Product $product, array $child_rows): array
     {
-        $child_prices = [];
-
-        foreach ($child_rows as $row) {
-            if ((int) ($row['is_purchasable'] ?? 0) !== 1) {
-                continue;
-            }
-
-            if ((string) ($row['stock_status'] ?? '') === 'outofstock') {
-                continue;
-            }
-
-            $price = $this->row_effective_price($row);
-
-            if ($price !== null && $price > 0) {
-                $child_prices[] = $price;
-            }
-        }
-
-        if (count($child_prices) > 0) {
-            $min = min($child_prices);
-            $max = max($child_prices);
-
-            return [
-                'display' => $min,
-                'min'     => $min,
-                'max'     => $max,
-            ];
-        }
-
-        if (method_exists($product, 'get_variation_prices')) {
-            $variation_prices = $product->get_variation_prices(true);
+        if (count($child_rows) > 0) {
             $prices = [];
 
-            foreach (['sale_price', 'regular_price', 'price'] as $key) {
-                if (! isset($variation_prices[$key]) || ! is_array($variation_prices[$key])) {
-                    continue;
-                }
+            foreach ($child_rows as $row) {
+                $price = $row['display_price'] ?? null;
 
-                foreach ($variation_prices[$key] as $value) {
-                    if ($value === '' || $value === null) {
-                        continue;
-                    }
-
-                    $price = (float) $value;
-
-                    if ($price > 0) {
-                        $prices[] = $price;
-                    }
+                if ($price !== null && $price !== '' && (float) $price > 0) {
+                    $prices[] = (float) $price;
                 }
             }
 
             if (count($prices) > 0) {
-                $min = min($prices);
-                $max = max($prices);
-
                 return [
-                    'display' => $min,
-                    'min'     => $min,
-                    'max'     => $max,
+                    'display' => min($prices),
+                    'min'     => min($prices),
+                    'max'     => max($prices),
                 ];
             }
         }
 
         $sale = $product->get_sale_price('edit');
         $regular = $product->get_regular_price('edit');
-        $current = method_exists($product, 'get_price') ? $product->get_price('edit') : null;
-
-        $display = $this->first_positive_price([$sale, $regular, $current]);
+        $display = $sale !== '' && $sale !== null ? $sale : $regular;
 
         return [
             'display' => $display,
-            'min'     => $display,
-            'max'     => $display,
+            'min'     => null,
+            'max'     => null,
         ];
-    }
-
-    private function row_effective_price(array $row): ?float
-    {
-        return $this->first_positive_price([
-            $row['sale_price'] ?? null,
-            $row['regular_price'] ?? null,
-            $row['display_price'] ?? null,
-            $row['min_price'] ?? null,
-        ]);
-    }
-
-    /**
-     * @param array<int, mixed> $values
-     */
-    private function first_positive_price(array $values): ?float
-    {
-        foreach ($values as $value) {
-            if ($value === null || $value === '') {
-                continue;
-            }
-
-            $price = (float) $value;
-
-            if ($price > 0) {
-                return $price;
-            }
-        }
-
-        return null;
     }
 
     /**

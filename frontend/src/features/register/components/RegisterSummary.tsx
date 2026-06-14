@@ -88,10 +88,6 @@ function RegisterSummary({
 
   return (
     <div className="mx-register-summary">
-      <div className="mx-register-summary__row">
-        <span className="mx-register-summary__label">Subtotal</span>
-        <MoneyDisplay amount={subtotal} size="md" />
-      </div>
 
       {couponTotal > 0 && validationResult && (
         <div className="mx-register-summary__row mx-register-summary__row--discount">
@@ -152,25 +148,6 @@ function RegisterSummary({
             : 'El carrito no es válido. Revisa los productos.'}
         </div>
       )}
-
-      <div className="mx-register-summary__actions">
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={onParkCart}
-          disabled={cartState === 'validating'}
-        >
-          Guardar carrito
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onShowParkedCarts}
-          disabled={cartState === 'validating'}
-        >
-          Carritos guardados
-        </Button>
-      </div>
 
       <div className="mx-register-summary__clear-section">
         <Button

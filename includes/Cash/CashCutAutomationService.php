@@ -51,6 +51,13 @@ class CashCutAutomationService
         $result = $service->generate_z($sessionId, $userId);
 
         if (is_wp_error($result)) {
+            error_log(
+                sprintf(
+                    '[MX POS Pro] Automatic closing receipt failed for session %d: %s',
+                    $sessionId,
+                    $result->get_error_message()
+                )
+            );
         }
     }
 }
