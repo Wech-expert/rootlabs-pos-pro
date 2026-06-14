@@ -77,6 +77,7 @@ class SaleController
                                     'product_id'   => 0,
                                     'variation_id'  => null,
                                     'quantity'      => 0,
+                                    'manual_discount' => null,
                                 ];
                             }
 
@@ -88,6 +89,13 @@ class SaleController
                                 'quantity'       => isset($item['quantity'])
                                     ? absint($item['quantity'])
                                     : 0,
+                                'manual_discount' => isset($item['manual_discount']) && is_array($item['manual_discount'])
+                                    ? [
+                                        'type'   => isset($item['manual_discount']['type']) ? sanitize_text_field((string) $item['manual_discount']['type']) : '',
+                                        'value'  => isset($item['manual_discount']['value']) ? (string) $item['manual_discount']['value'] : '',
+                                        'reason' => isset($item['manual_discount']['reason']) ? sanitize_text_field((string) $item['manual_discount']['reason']) : '',
+                                    ]
+                                    : null,
                             ];
                         }, $items));
                     },

@@ -36,7 +36,7 @@ function getUnitPrice(p: IndexedProduct): number {
 }
 
 function cartSubtotal(items: CartItem[]): number {
-  return items.reduce((sum, i) => sum + i.unit_price * i.quantity, 0);
+  return items.reduce((sum, i) => sum + Math.max(0, i.unit_price * i.quantity - calculateCartLineDiscount(i)), 0);
 }
 
 function canAddProduct(product: IndexedProduct): boolean {
@@ -57,6 +57,7 @@ function computeCartFingerprint(
         v: i.variation_id ?? 0,
         q: i.quantity,
         up: i.unit_price,
+        d: i.manual_discount ?? null,
         s: i.sku,
       }))
       .sort((a, b) => {
@@ -321,6 +322,27 @@ function Register({ connectionStatus }: { connectionStatus: ConnectionStatus }) 
   const handleClearDiscount = useCallback(() => {
     setDiscount(null);
   }, []);
+
+  const handleApplyItemDiscount = useCallback((key: string, lineDiscount: DiscountInput) => {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.key === key
+          ? { ...item, manual_discount: lineDiscount }
+          : item,
+      ),
+    );
+  }, []);
+
+  const handleClearItemDiscount = useCallback((key: string) => {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.key === key
+          ? { ...item, manual_discount: null }
+          : item,
+      ),
+    );
+  }, []);
+
 
   const handleApplyCoupon = useCallback((coupon: AppliedCoupon) => {
     setAppliedCoupon(coupon);

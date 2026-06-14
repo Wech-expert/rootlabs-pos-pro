@@ -278,7 +278,21 @@ class TicketService
 
         $employee = $this->employee_repo()->get_by_id($employeeId);
 
-        return is_array($employee) && ! empty($employee['name']) ? (string) $employee['name'] : '';
+        if (! is_array($employee)) {
+            return '';
+        }
+
+        $name = trim((string) ($employee['display_name'] ?? ''));
+
+        if ($name === '') {
+            $name = trim((string) ($employee['name'] ?? ''));
+        }
+
+        if ($name === '') {
+            $name = trim((string) ($employee['username'] ?? ''));
+        }
+
+        return $name;
     }
 
     // ─── Sale ticket ────────────────────────────────────────────────
@@ -318,8 +332,17 @@ class TicketService
         $register_name  = $this->get_register_name(isset($sale['pos_register_id']) ? (int) $sale['pos_register_id'] : null);
         $pos_employee   = $this->get_pos_employee_name(isset($sale['pos_employee_id']) ? (int) $sale['pos_employee_id'] : null);
         $session_id     = (int) ($sale['session_id'] ?? 0);
+        $session_cashier = $this->get_session_pos_employee_name($session_id);
+        $order_cashier  = $this->get_order_cashier_name($order);
+        $sale_cashier_as_employee = $this->get_pos_employee_name(isset($sale['cashier_id']) ? (int) $sale['cashier_id'] : null);
         $pos_sale_id    = (int) ($sale['id'] ?? 0);
-        $display_cashier = $pos_employee !== '' ? $pos_employee : $cashier_name;
+        $display_cashier = $pos_employee !== ''
+            ? $pos_employee
+            : ($session_cashier !== ''
+                ? $session_cashier
+                : ($order_cashier !== ''
+                    ? $order_cashier
+                    : ($sale_cashier_as_employee !== '' ? $sale_cashier_as_employee : $cashier_name)));
 
         $items_html = $this->build_items_rows($order, true);
 
@@ -848,6 +871,43 @@ class TicketService
         return $name !== '' ? $name : __('Tienda', 'mx-pos-pro');
     }
 
+    private function get_session_pos_employee_name(int $sessionId): string
+    {
+        if ($sessionId <= 0) {
+            return '';
+        }
+
+        global $wpdb;
+
+        $sessionsTable = $wpdb->prefix . 'mx_pos_sessions';
+        $employeesTable = $wpdb->prefix . 'mx_pos_employees';
+
+        $name = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT e.display_name
+                 FROM `{$sessionsTable}` s
+                 LEFT JOIN `{$employeesTable}` e ON e.id = s.pos_employee_id
+                 WHERE s.id = %d
+                 LIMIT 1",
+                $sessionId
+            )
+        );
+
+        return is_string($name) ? trim($name) : '';
+    }
+
+    private function get_order_cashier_name(\WC_Order $order): string
+    {
+        foreach (['_mx_pos_employee_name', '_mx_pos_cashier_name', '_yith_pos_cashier'] as $key) {
+            $value = $order->get_meta($key, true);
+
+            if (is_string($value) && trim($value) !== '') {
+                return trim($value);
+            }
+        }
+
+        return '';
+    }
     private function get_cashier_name(int $cashier_id): string
     {
         if ($cashier_id <= 0) {
@@ -967,15 +1027,17 @@ class TicketService
     {
         $subtotal = (float) $order->get_subtotal();
 
-        $discount_total = 0.0;
+        $global_discount_total = 0.0;
         foreach ($order->get_fees() as $fee) {
             if ($fee->get_meta('_mx_pos_is_pos_discount', true) !== 'yes') {
                 continue;
             }
 
-            $discount_total = abs((float) $fee->get_total());
-            break;
+            $global_discount_total += abs((float) $fee->get_total());
         }
+
+        $line_discount_total = $this->resolve_line_discount_total($order);
+        $discount_total = $global_discount_total + $line_discount_total;
 
         $couponTotal  = 0.0;
         $couponCodes  = [];
@@ -990,6 +1052,8 @@ class TicketService
         return [
             'subtotal'       => number_format($subtotal, 2, '.', ','),
             'discount_total' => number_format($discount_total, 2, '.', ','),
+            'line_discount_total' => number_format($line_discount_total, 2, '.', ','),
+            'global_discount_total' => number_format($global_discount_total, 2, '.', ','),
             'coupon_total'   => number_format($couponTotal, 2, '.', ','),
             'coupon_codes'   => $couponCodes,
             'tax_total'      => number_format($tax_total, 2, '.', ','),
@@ -997,6 +1061,31 @@ class TicketService
         ];
     }
 
+
+    private function resolve_line_discount_total(\WC_Order $order): float
+    {
+        $orderMetaTotal = $order->get_meta('_mx_pos_line_discount_total', true);
+
+        if (is_numeric($orderMetaTotal) && (float) $orderMetaTotal > 0) {
+            return (float) $orderMetaTotal;
+        }
+
+        $lineDiscountTotal = 0.0;
+
+        foreach ($order->get_items('line_item') as $item) {
+            if (! $item instanceof \WC_Order_Item_Product) {
+                continue;
+            }
+
+            $lineDiscount = $item->get_meta('_mx_pos_line_discount_amount', true);
+
+            if (is_numeric($lineDiscount) && (float) $lineDiscount > 0) {
+                $lineDiscountTotal += (float) $lineDiscount;
+            }
+        }
+
+        return $lineDiscountTotal;
+    }
     private function build_payment_section(array $sale): string
     {
         $payment_summary = $sale['payment_summary'] ?? null;
@@ -1091,7 +1180,7 @@ class TicketService
             return $ticket_settings['footer_text'];
         }
 
-        return 'RootLabs POS — ' . $cutLabel;
+        return 'MX POS Pro — ' . $cutLabel;
     }
 
     private function format_date(string $date_str): string

@@ -6,6 +6,8 @@ export interface DiscountInput {
   reason: string;
 }
 
+export interface LineDiscountInput extends DiscountInput {}
+
 export interface ValidatedDiscount {
   type: DiscountType;
   value: string;

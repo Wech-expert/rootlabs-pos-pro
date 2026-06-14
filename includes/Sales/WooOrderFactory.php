@@ -41,6 +41,8 @@ class WooOrderFactory
 
         self::apply_pos_origin_meta($order);
 
+        $lineDiscountTotal = 0.0;
+
         foreach ($validatedItems as $item) {
             $productId   = (int) $item['product_id'];
             $variationId = isset($item['variation_id']) && $item['variation_id'] !== null
@@ -59,10 +61,20 @@ class WooOrderFactory
             $orderItem->set_quantity($quantity);
 
             $unitPrice  = (float) $item['unit_price'];
+            $lineSubtotal = isset($item['line_subtotal']) ? (float) $item['line_subtotal'] : (float) $item['line_total'];
             $lineTotal  = (float) $item['line_total'];
+            $lineDiscount = isset($item['line_discount_total']) ? (float) $item['line_discount_total'] : max(0, $lineSubtotal - $lineTotal);
+            $lineDiscountTotal += $lineDiscount;
 
-            $orderItem->set_subtotal($lineTotal);
+            $orderItem->set_subtotal($lineSubtotal);
             $orderItem->set_total($lineTotal);
+
+            if ($lineDiscount > 0 && isset($item['manual_discount']) && is_array($item['manual_discount'])) {
+                $orderItem->add_meta_data('_mx_pos_line_discount_type', $item['manual_discount']['type'] ?? '');
+                $orderItem->add_meta_data('_mx_pos_line_discount_value', $item['manual_discount']['value'] ?? '');
+                $orderItem->add_meta_data('_mx_pos_line_discount_amount', number_format($lineDiscount, 4, '.', ''));
+                $orderItem->add_meta_data('_mx_pos_line_discount_reason', $item['manual_discount']['reason'] ?? '');
+            }
 
             $order->add_item($orderItem);
         }
@@ -119,6 +131,10 @@ class WooOrderFactory
 
         $order->add_meta_data('_mx_pos_client_request_id', $posMeta['client_request_id']);
 
+        if ($lineDiscountTotal > 0) {
+            $order->add_meta_data('_mx_pos_line_discount_total', number_format($lineDiscountTotal, 4, '.', ''));
+        }
+
         if ($feeDiscountApplied && $discount !== null) {
             $order->add_meta_data('_mx_pos_discount_type', $discount['type']);
             $order->add_meta_data('_mx_pos_discount_amount', $discountTotal);
@@ -149,7 +165,7 @@ class WooOrderFactory
             $couponAmount += (float) $couponItem->get_discount();
         }
 
-        $expectedTotal = (float) $subtotal - $couponAmount - (float) $discountTotal;
+        $expectedTotal = (float) $subtotal - $couponAmount - $lineDiscountTotal - (float) $discountTotal;
 
         if ($expectedTotal < 0) {
             $expectedTotal = 0;

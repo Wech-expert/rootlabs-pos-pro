@@ -1,20 +1,5 @@
 <?php
 
-
-/**
- * RootLabs POS uses custom operational tables for POS data.
- * These database calls are intentional and isolated in repository/service layers.
- *
- * rootlabs-pos-pro-w2a-db-intentional
- *
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
- * phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
- * phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
- * phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
- * phpcs:disable WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
- * phpcs:disable PluginCheck.Security.DirectDB.UnescapedDBParameter
- */
-
 namespace MXPOSPro\Sales;
 
 defined('ABSPATH') || exit;
@@ -89,15 +74,12 @@ class SaleHistoryRepository
 
         $orderBy = 's.created_at DESC, s.id DESC';
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Internal table identifier and fixed WHERE fragments; dynamic values are prepared below.
         $sql = "SELECT s.* FROM {$this->salesTable} s WHERE {$where} ORDER BY {$orderBy} LIMIT %d OFFSET %d";
         $whereArgs[] = $perPage;
         $whereArgs[] = $offset;
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query template uses internal table identifier; placeholders are prepared here.
         $prepared = $wpdb->prepare($sql, $whereArgs);
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Query is prepared immediately above.
         $rows = $wpdb->get_results($prepared, ARRAY_A);
 
         if (! is_array($rows)) {
@@ -162,14 +144,11 @@ class SaleHistoryRepository
             $whereArgs[] = (int) $filters['session_id'];
         }
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Internal table identifier and fixed WHERE fragments; dynamic values are prepared below when present.
         $sql = "SELECT COUNT(*) FROM {$this->salesTable} WHERE {$where}";
         $prepared = $whereArgs !== []
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query template uses internal table identifier; placeholders are prepared here.
             ? $wpdb->prepare($sql, $whereArgs)
             : $sql;
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Query has no user input or was prepared above.
         return (int) $wpdb->get_var($prepared);
     }
 
@@ -223,12 +202,26 @@ class SaleHistoryRepository
                     continue;
                 }
 
+                $quantity = max(1, (int) $item->get_quantity());
+                $lineSubtotal = (float) $item->get_subtotal();
+                $lineTotal = (float) $item->get_total();
+                $lineDiscount = $item->get_meta('_mx_pos_line_discount_amount', true);
+                $lineDiscountAmount = is_numeric($lineDiscount) ? (float) $lineDiscount : 0.0;
+
                 $items[] = [
                     'name'       => $item->get_name(),
                     'sku'        => '',
                     'quantity'   => (int) $item->get_quantity(),
-                    'unit_price' => $this->formatDecimal((float) $item->get_total() / max(1, (int) $item->get_quantity())),
-                    'line_total' => $this->formatDecimal((float) $item->get_total()),
+                    'unit_price' => $this->formatDecimal($lineSubtotal / $quantity),
+                    'line_subtotal' => $this->formatDecimal($lineSubtotal),
+                    'line_discount_total' => $this->formatDecimal($lineDiscountAmount),
+                    'line_total' => $this->formatDecimal($lineTotal),
+                    'manual_discount' => $lineDiscountAmount > 0 ? [
+                        'type'   => (string) $item->get_meta('_mx_pos_line_discount_type', true),
+                        'value'  => (string) $item->get_meta('_mx_pos_line_discount_value', true),
+                        'reason' => (string) $item->get_meta('_mx_pos_line_discount_reason', true),
+                        'amount' => $this->formatDecimal($lineDiscountAmount),
+                    ] : null,
                 ];
             }
         }
@@ -445,9 +438,36 @@ class SaleHistoryRepository
             $discountTotal += abs((float) $fee->get_total());
         }
 
+        $discountTotal += $this->resolve_line_discount_total($order);
+
         return $discountTotal;
     }
 
+
+    private function resolve_line_discount_total(\WC_Order $order): float
+    {
+        $orderMetaTotal = $order->get_meta('_mx_pos_line_discount_total', true);
+
+        if (is_numeric($orderMetaTotal) && (float) $orderMetaTotal > 0) {
+            return (float) $orderMetaTotal;
+        }
+
+        $lineDiscountTotal = 0.0;
+
+        foreach ($order->get_items('line_item') as $item) {
+            if (! $item instanceof \WC_Order_Item_Product) {
+                continue;
+            }
+
+            $lineDiscount = $item->get_meta('_mx_pos_line_discount_amount', true);
+
+            if (is_numeric($lineDiscount) && (float) $lineDiscount > 0) {
+                $lineDiscountTotal += (float) $lineDiscount;
+            }
+        }
+
+        return $lineDiscountTotal;
+    }
     public function lookup_by_query(int $userId, string $query): array
     {
         global $wpdb;
@@ -476,7 +496,6 @@ class SaleHistoryRepository
 
         $limit = 10;
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Internal table identifier and fixed WHERE fragments; dynamic values are prepared below.
         $sql = "SELECT s.id, s.wc_order_id, s.status, s.total, s.refunded_total, s.created_at
                 FROM {$this->salesTable} s
                 WHERE 1=1 {$where}
@@ -485,9 +504,7 @@ class SaleHistoryRepository
 
         $whereArgs[] = $limit;
 
-        // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- Query is prepared in the nested call.
         $rows = $wpdb->get_results(
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query template uses internal table identifier; placeholders are prepared here.
             $wpdb->prepare($sql, $whereArgs),
             ARRAY_A
         );

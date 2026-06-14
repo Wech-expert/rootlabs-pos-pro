@@ -20,6 +20,9 @@ class CartItemValidator
         $name   = '';
         $unit_price     = '0';
         $line_total     = '0';
+        $line_subtotal  = '0.0000';
+        $line_discount_total = '0.0000';
+        $manual_discount = null;
         $stock_status   = '';
         $stock_quantity = null;
 
@@ -117,6 +120,21 @@ class CartItemValidator
 
         $sku            = (string) $sellable->get_sku();
         $name           = (string) $sellable->get_name();
+
+        if ($variation_id !== null && $variation_id > 0) {
+            $parent_product = wc_get_product($product_id);
+
+            if ($parent_product && $parent_product->exists()) {
+                $parent_name    = trim((string) $parent_product->get_name());
+                $variation_name = trim((string) $sellable->get_name());
+
+                if ($parent_name !== '' && $variation_name !== '' && stripos($variation_name, $parent_name) === false) {
+                    $name = $parent_name . ' - ' . $variation_name;
+                }
+            }
+        }
+
+        $mx_pos_compose_variation_cart_name = true;
         $stock_status   = (string) $sellable->get_stock_status();
         $stock_quantity = $sellable->get_stock_quantity();
 
@@ -133,7 +151,21 @@ class CartItemValidator
         }
 
         $unit_price = $this->getCanonicalPrice($sellable);
-        $line_total = $this->formatDecimal((float) $unit_price * $quantity);
+        $line_subtotal = $this->formatDecimal((float) $unit_price * $quantity);
+        $line_total = $line_subtotal;
+
+        $discountResult = $this->validate_manual_discount(
+            isset($item['manual_discount']) && is_array($item['manual_discount']) ? $item['manual_discount'] : null,
+            (float) $line_subtotal
+        );
+
+        if (is_wp_error($discountResult)) {
+            $errors[] = $discountResult->get_error_message();
+        } else {
+            $manual_discount = $discountResult['manual_discount'];
+            $line_discount_total = $discountResult['line_discount_total'];
+            $line_total = $this->formatDecimal(max(0, (float) $line_subtotal - (float) $line_discount_total));
+        }
 
         $valid = count($errors) === 0;
 
@@ -141,10 +173,100 @@ class CartItemValidator
             $product_id, $variation_id, $sku, $name, $quantity,
             $unit_price, $line_total, $stock_status,
             $stock_quantity !== '' ? $stock_quantity : null,
-            $valid, $errors
+            $valid, $errors,
+            $line_subtotal,
+            $line_discount_total,
+            $manual_discount
         );
     }
 
+
+    private function validate_manual_discount(?array $discount, float $lineSubtotal): array|\WP_Error
+    {
+        if ($discount === null) {
+            return [
+                'manual_discount' => null,
+                'line_discount_total' => '0.0000',
+            ];
+        }
+
+        if (
+            ! current_user_can('mx_pos_apply_discount')
+            && ! current_user_can('manage_woocommerce')
+            && ! current_user_can('manage_options')
+        ) {
+            return new \WP_Error(
+                'mx_pos_discount_forbidden',
+                __('You do not have permission to apply discounts.', 'mx-pos-pro')
+            );
+        }
+
+        $type = isset($discount['type']) && is_string($discount['type'])
+            ? sanitize_text_field($discount['type'])
+            : '';
+
+        if (! in_array($type, ['percentage', 'fixed'], true)) {
+            return new \WP_Error(
+                'mx_pos_invalid_line_discount',
+                __('Invalid line discount type.', 'mx-pos-pro')
+            );
+        }
+
+        $value = isset($discount['value']) && is_numeric($discount['value'])
+            ? (float) $discount['value']
+            : 0.0;
+
+        if ($value <= 0) {
+            return new \WP_Error(
+                'mx_pos_invalid_line_discount',
+                __('Line discount value must be greater than zero.', 'mx-pos-pro')
+            );
+        }
+
+        if ($type === 'percentage' && $value > 100) {
+            return new \WP_Error(
+                'mx_pos_invalid_line_discount',
+                __('Percentage discount cannot exceed 100%.', 'mx-pos-pro')
+            );
+        }
+
+        $reason = isset($discount['reason']) && is_string($discount['reason'])
+            ? trim(sanitize_text_field($discount['reason']))
+            : '';
+
+        if ($reason === '' || strlen($reason) < 3) {
+            return new \WP_Error(
+                'mx_pos_invalid_line_discount',
+                __('Line discount reason is required.', 'mx-pos-pro')
+            );
+        }
+
+        if ($type === 'percentage') {
+            $amount = $lineSubtotal * ($value / 100);
+        } else {
+            if ($value > $lineSubtotal) {
+                return new \WP_Error(
+                    'mx_pos_invalid_line_discount',
+                    __('Fixed discount cannot exceed the line subtotal.', 'mx-pos-pro')
+                );
+            }
+
+            $amount = $value;
+        }
+
+        $amount = min($lineSubtotal, max(0, $amount));
+        $amountStr = number_format($amount, 4, '.', '');
+
+        return [
+            'manual_discount' => [
+                'type'   => $type,
+                'value'  => number_format($value, 2, '.', ''),
+                'reason' => $reason,
+                'amount' => $amountStr,
+            ],
+            'line_discount_total' => $amountStr,
+        ];
+    }
     private function getCanonicalPrice(\WC_Product $product): string
     {
         $price = $product->get_price('edit');

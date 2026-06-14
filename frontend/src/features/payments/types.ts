@@ -1,3 +1,5 @@
+import type { DiscountInput } from '../discounts/types';
+
 export type PaymentMethod = 'cash' | 'card';
 
 export type PaymentMethodCategory = 'cash' | 'card' | 'mixed' | 'woocommerce' | 'other';
@@ -95,6 +97,7 @@ export interface CheckoutRequest {
     product_id: number;
     variation_id: number | null;
     quantity: number;
+    manual_discount?: DiscountInput | null;
   }>;
   customer_id?: number | null;
   discount?: {

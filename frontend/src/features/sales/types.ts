@@ -6,6 +6,7 @@ export interface CreateSaleRequest {
     product_id: number;
     variation_id: number | null;
     quantity: number;
+    manual_discount?: DiscountInput | null;
   }>;
   customer_id?: number | null;
   discount?: DiscountInput | null;

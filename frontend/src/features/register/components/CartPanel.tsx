@@ -10,6 +10,9 @@ interface CartPanelProps {
   items: CartItem[];
   onUpdateQuantity: (key: string, qty: number) => void;
   onRemoveItem: (key: string) => void;
+  canApplyDiscount: boolean;
+  onApplyItemDiscount: (key: string, discount: DiscountInput) => void;
+  onClearItemDiscount: (key: string) => void;
   subtotal: number;
   cartState: CartState;
   isValidating: boolean;
@@ -37,6 +40,9 @@ function CartPanel({
   items,
   onUpdateQuantity,
   onRemoveItem,
+  canApplyDiscount,
+  onApplyItemDiscount,
+  onClearItemDiscount,
   subtotal,
   cartState,
   isValidating,
@@ -94,6 +100,9 @@ function CartPanel({
               item={item}
               onUpdateQuantity={onUpdateQuantity}
               onRemoveItem={onRemoveItem}
+              canApplyDiscount={canApplyDiscount}
+              onApplyItemDiscount={onApplyItemDiscount}
+              onClearItemDiscount={onClearItemDiscount}
             />
           ))}
         </div>

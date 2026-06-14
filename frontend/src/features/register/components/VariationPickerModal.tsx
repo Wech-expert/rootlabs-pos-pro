@@ -17,6 +17,21 @@ function getDisplayPrice(product: IndexedProduct): number {
   return 0;
 }
 
+function composeVariationCartName(parentName: string, variationName: string): string {
+  const parent = parentName.trim();
+  const variation = variationName.trim();
+
+  if (!parent) return variation;
+  if (!variation) return parent;
+
+  if (variation.toLowerCase().includes(parent.toLowerCase())) {
+    return variation;
+  }
+
+  return `${parent} - ${variation}`;
+}
+
+
 function VariationPickerModal({
   product,
   open,
@@ -86,7 +101,10 @@ function VariationPickerModal({
                   size="sm"
                   disabled={isOutOfStock}
                   onClick={() => {
-                    onAddToCart(variation);
+                    onAddToCart({
+                      ...variation,
+                      name: composeVariationCartName(product.name, variation.name),
+                    });
                     onClose();
                   }}
                 >

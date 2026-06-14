@@ -58,6 +58,13 @@ class CartValidationController
                                 'quantity'       => isset($item['quantity'])
                                     ? min(absint($item['quantity']), self::MAX_QUANTITY)
                                     : 0,
+                                'manual_discount' => isset($item['manual_discount']) && is_array($item['manual_discount'])
+                                    ? [
+                                        'type'   => isset($item['manual_discount']['type']) ? sanitize_text_field((string) $item['manual_discount']['type']) : '',
+                                        'value'  => isset($item['manual_discount']['value']) ? (string) $item['manual_discount']['value'] : '',
+                                        'reason' => isset($item['manual_discount']['reason']) ? sanitize_text_field((string) $item['manual_discount']['reason']) : '',
+                                    ]
+                                    : null,
                             ];
                         }, $items));
                     },
@@ -159,10 +166,13 @@ class CartValidationController
         }
 
         $subtotal = 0.0;
+        $lineDiscountTotal = 0.0;
 
         foreach ($validated_items as $validated) {
             if ($validated->valid) {
-                $subtotal += (float) $validated->line_total;
+                $lineSubtotal = $validated->line_subtotal !== '' ? $validated->line_subtotal : $validated->line_total;
+                $subtotal += (float) $lineSubtotal;
+                $lineDiscountTotal += (float) ($validated->line_discount_total ?? 0);
             }
         }
 
@@ -171,11 +181,11 @@ class CartValidationController
         $coupon_total_str   = '0.0000';
         $validated_coupon    = null;
         $coupon_error        = null;
-        $discountBaseSubtotal = $subtotal;
+        $discountBaseSubtotal = max(0, $subtotal - $lineDiscountTotal);
 
         if ($couponCode !== null && $couponCode !== '') {
             $couponService = new CouponLookupService();
-            $couponResult  = $couponService->validate($couponCode, $subtotal, null);
+            $couponResult  = $couponService->validate($couponCode, $discountBaseSubtotal, null);
 
             if (is_wp_error($couponResult)) {
                 $coupon_error = $couponResult->get_error_code() === 'mx_pos_coupon_not_found'
@@ -184,14 +194,12 @@ class CartValidationController
             } else {
                 $validated_coupon  = $couponResult;
                 $coupon_total_str  = $couponResult['discount_total'];
-                $discountBaseSubtotal = $subtotal - (float) $coupon_total_str;
-                if ($discountBaseSubtotal < 0) {
-                    $discountBaseSubtotal = 0;
-                }
+                $discountBaseSubtotal = max(0, $discountBaseSubtotal - (float) $coupon_total_str);
             }
         }
 
-        $discount_total_str  = '0.0000';
+        $globalDiscountTotalStr = '0.0000';
+        $discount_total_str  = $this->formatDecimal($lineDiscountTotal);
         $validated_discount   = null;
 
         if ($discount !== null && is_array($discount)) {
@@ -207,7 +215,8 @@ class CartValidationController
             }
 
             $validated_discount   = $discountResult['discount'];
-            $discount_total_str   = $discountResult['discount_total'];
+            $globalDiscountTotalStr = $discountResult['discount_total'];
+            $discount_total_str   = $this->formatDecimal($lineDiscountTotal + (float) $globalDiscountTotalStr);
         }
 
         $total = (float) $subtotal_str - (float) $coupon_total_str - (float) $discount_total_str;

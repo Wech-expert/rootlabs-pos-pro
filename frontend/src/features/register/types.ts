@@ -1,3 +1,5 @@
+import type { DiscountInput } from '../discounts/types';
+
 export interface IndexedProduct {
   product_id: number;
   variation_id: number | null;
@@ -39,6 +41,7 @@ export interface CartItem {
   quantity: number;
   unit_price: number;
   stock_status: string;
+  manual_discount?: DiscountInput | null;
 }
 
 export interface SearchResponse {
@@ -53,6 +56,7 @@ export interface CartValidationRequestItem {
   product_id: number;
   variation_id: number | null;
   quantity: number;
+  manual_discount?: DiscountInput | null;
 }
 
 export interface ValidatedCartItem {
@@ -62,7 +66,10 @@ export interface ValidatedCartItem {
   name: string;
   quantity: number;
   unit_price: string;
+  line_subtotal?: string;
   line_total: string;
+  line_discount_total?: string;
+  manual_discount?: ValidatedDiscount | null;
   stock_status: string;
   stock_quantity: number | null;
   valid: boolean;

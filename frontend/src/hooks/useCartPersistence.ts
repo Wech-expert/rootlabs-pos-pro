@@ -9,6 +9,7 @@ interface PersistedCartItem {
   product_id: number;
   variation_id: number | null;
   quantity: number;
+  manual_discount?: DiscountInput | null;
 }
 
 interface PersistedCart {
@@ -68,6 +69,7 @@ export function useCartPersistence(): UseCartPersistenceResult {
         product_id: i.product_id,
         variation_id: i.variation_id ?? null,
         quantity: i.quantity,
+        manual_discount: i.manual_discount ?? null,
       })),
       customerId: snapshot.customerId,
       discount: snapshot.discount,

@@ -341,6 +341,7 @@ void handleStartNewLine;
           product_id: i.product_id,
           variation_id: i.variation_id,
           quantity: i.quantity,
+          manual_discount: i.manual_discount ?? null,
         })),
         customer_id: selectedCustomer?.id ?? null,
         discount: discount ?? null,

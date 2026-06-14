@@ -24,6 +24,7 @@ export async function validateCart(
       product_id: item.product_id,
       variation_id: item.variation_id,
       quantity: item.quantity,
+      manual_discount: item.manual_discount ?? null,
     })),
   };
 
